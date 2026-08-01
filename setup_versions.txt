@@ -1,0 +1,30 @@
+Informazioni ambiente LabAlgo
+Python 3.14.3
+pip 26.2 from C:\Users\nicco\desktop\UNI\Laboratorio di Algoritmi\ProgettoLabAlgo\.venv\Lib\site-packages\pip (python 3.14)
+
+4.6.2
+matplotlib 3.11.1
+pytest 9.1.1
+Sistema Operativo:
+Sistema Operativo:
+
+
+Caption        : Microsoft Windows 11 Pro
+Version        : 10.0.26200
+OSArchitecture : 64-bit
+
+
+
+
+Processore:
+
+
+Name                      : 11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz
+NumberOfCores             : 8
+NumberOfLogicalProcessors : 16
+
+
+
+
+Memoria RAM:
+RAM totale: 31.73 GB
