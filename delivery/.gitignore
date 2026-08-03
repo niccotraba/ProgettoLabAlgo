@@ -1,6 +1,33 @@
-﻿.venv/
+﻿@'
+# Ambiente virtuale
+.venv/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.egg-info/
+
+# Pytest
 .pytest_cache/
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Visual Studio Code
 .vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Log
+*.log
+
+# Backup locali della documentazione
+documentazione_progetto/backup_*/
+
+# File prodotti dal test iniziale dell'ambiente
+esercizio1/risultati/dati/verifica_ambiente.csv
+esercizio1/risultati/grafici/verifica_ambiente.png
+'@ | Set-Content -Encoding UTF8 ".gitignore"
