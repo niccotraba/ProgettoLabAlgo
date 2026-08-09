@@ -203,3 +203,21 @@ def test_rispetta_protocollo_comune() -> None:
     linked_list = OrderedLinkedList()
 
     assert isinstance(linked_list, OrderStatisticStructure)
+
+def test_sequenza_mista_lista() -> None:
+    linked_list = OrderedLinkedList()
+
+    node_20 = linked_list.insert(20)
+    linked_list.insert(10)
+    node_30 = linked_list.insert(30)
+
+    assert linked_list.delete(node_20) is True
+
+    node_15 = linked_list.insert(15)
+    linked_list.insert(25)
+
+    assert linked_list.select(1).key == 10
+    assert linked_list.select(2) is node_15
+    assert linked_list.select(4) is node_30
+
+    assert linked_list.rank(node_15) == 2

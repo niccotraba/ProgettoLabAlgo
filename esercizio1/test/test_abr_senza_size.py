@@ -269,3 +269,58 @@ def test_rispetta_protocollo_comune() -> None:
     tree = BinarySearchTree()
 
     assert isinstance(tree, OrderStatisticStructure)
+
+
+def test_sequenza_mista_abr() -> None:
+    tree = BinarySearchTree()
+
+    node_20 = tree.insert(20)
+    node_10 = tree.insert(10)
+    node_30 = tree.insert(30)
+    tree.insert(5)
+    node_15 = tree.insert(15)
+
+    # Situazione iniziale:
+    #        20
+    #       /  \
+    #     10    30
+    #    /  \
+    #   5   15
+
+    assert [
+        tree.select(index).key
+        for index in range(1, len(tree) + 1)
+    ] == [5, 10, 15, 20, 30]
+
+    # Eliminiamo un nodo interno.
+    assert tree.delete(node_10) is True
+
+    # Aggiungiamo altri elementi.
+    node_12 = tree.insert(12)
+    tree.insert(25)
+
+    # Eliminiamo anche la vecchia radice.
+    assert tree.delete(node_20) is True
+
+    # L'insieme finale delle chiavi deve essere:
+    # 5, 12, 15, 25, 30
+    assert len(tree) == 5
+
+    assert [
+        tree.select(index).key
+        for index in range(1, len(tree) + 1)
+    ] == [5, 12, 15, 25, 30]
+
+    # select e rank devono continuare a essere coerenti.
+    for index in range(1, len(tree) + 1):
+        node = tree.select(index)
+
+        assert tree.rank(node) == index
+
+    assert tree.rank(node_12) == 2
+    assert tree.rank(node_15) == 3
+    assert tree.rank(node_30) == 5
+
+    # I nodi eliminati devono risultare effettivamente scollegati.
+    assert node_10.owner is None
+    assert node_20.owner is None
