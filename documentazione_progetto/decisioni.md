@@ -270,3 +270,61 @@
   - coerenza con gli pseudocodici iterativi presentati nelle slide;
   - evitare problemi con il limite di ricorsione di Python nel caso di ABR degenerati.
 - Stato: definitiva.
+
+## D23 — Rappresentazione dell'AVL aumentato
+
+- Decisione:
+  - AVL implementato come ABR bilanciato;
+  - figli assenti rappresentati mediante `None`;
+  - `None` è semanticamente equivalente a `T.nil` delle slide;
+  - per un figlio assente `height = 0` e `size = 0`;
+  - ogni nodo reale appena creato possiede `height = 1` e `size = 1`;
+  - ogni nodo contiene `key`, `insertion_id`, `owner`, `parent`, `left`, `right`, `height` e `size`.
+- Stato: definitiva.
+
+## D24 — Aggiornamento di `height` e `size`
+
+- Decisione:
+  - `height` e `size` vengono ricalcolati localmente tramite una funzione `_update`;
+  - `_update` richiede tempo `O(1)`;
+  - durante la risalita verso la radice vengono aggiornati entrambi i campi;
+  - durante le rotazioni vengono aggiornati prima il nodo ruotato e poi la nuova radice del sottoalbero.
+- Motivazione:
+  - mantenere gli attributi aumentati senza attraversare nuovamente i sottoalberi;
+  - preservare la complessità `O(log n)` delle operazioni AVL.
+- Stato: definitiva.
+
+## D25 — Rotazioni e riequilibrio AVL
+
+- Decisione:
+  - balance factor definito come `height(left) - height(right)`;
+  - vengono gestiti i casi Left-Left, Left-Right, Right-Right e Right-Left;
+  - il riequilibrio risale dal primo nodo modificato fino alla radice;
+  - ogni rotazione aggiorna puntatori, `height` e `size`.
+- Stato: definitiva.
+
+## D26 — `select` e `rank` nell'AVL aumentato
+
+- Decisione:
+  - `select` utilizza `left.size + 1` per scegliere il ramo da visitare;
+  - `rank` parte da `node.left.size + 1` e risale verso la radice;
+  - quando la risalita proviene da un figlio destro vengono aggiunti `parent.left.size + 1`;
+  - i ranghi sono indicizzati da 1;
+  - l'identità del nodo distingue le occorrenze duplicate.
+- Conseguenza:
+  - `select` ha complessità `O(log n)`;
+  - `rank` ha complessità `O(log n)`.
+- Stato: definitiva.
+
+## D26 — Cancellazione nell'AVL aumentato
+
+- Decisione:
+  - `delete` riceve il nodo preciso;
+  - il nodo richiesto viene fisicamente rimosso;
+  - con due figli il successore viene spostato strutturalmente al posto del nodo eliminato;
+  - dopo la modifica si risale verso la radice aggiornando `height`, `size` e bilanciamento;
+  - il nodo eliminato viene scollegato e impostato con `owner = None`.
+- Nota sulla fonte:
+  - le slide descrivono il principio di aggiornamento di `size` durante la cancellazione ma non forniscono uno pseudocodice completo della cancellazione AVL;
+  - l'implementazione dettagliata adottata nel progetto è quindi una scelta implementativa coerente con gli invarianti AVL e con il mantenimento di `size`.
+- Stato: definitiva.
