@@ -1,4 +1,4 @@
-﻿# Registro delle decisioni
+# Registro delle decisioni
 
 ## Stato
 
@@ -119,3 +119,22 @@
   - il comportamento logico è congelato;
   - nomi delle classi, annotazioni di tipo, classi astratte e dettagli tecnici saranno definiti nel Task 1.
 - Stato: rinviata deliberatamente.
+
+
+## D13 — Interfaccia comune Python
+
+- Decisione: utilizzare `typing.Protocol`.
+- Motivazione: lista ordinata, ABR e AVL possono soddisfare lo stesso contratto senza condividere una gerarchia di ereditarietà.
+- Operazioni pubbliche comuni:
+  - `__len__`
+  - `insert`
+  - `search`
+  - `delete`
+  - `select`
+  - `rank`
+- I nodi condividono logicamente:
+  - `key`
+  - `insertion_id`
+  - `owner`
+- `validate`, visite, rotazioni e altri metodi ausiliari non fanno parte dell'interfaccia pubblica comune.
+- Stato: definitiva.
