@@ -328,3 +328,21 @@
   - le slide descrivono il principio di aggiornamento di `size` durante la cancellazione ma non forniscono uno pseudocodice completo della cancellazione AVL;
   - l'implementazione dettagliata adottata nel progetto è quindi una scelta implementativa coerente con gli invarianti AVL e con il mantenimento di `size`.
 - Stato: definitiva.
+
+## D27 — Strategia dei test comparati
+
+- Decisione:
+  - lista ordinata, ABR senza `size` e AVL aumentato vengono confrontati tramite la loro interfaccia pubblica comune;
+  - la forma interna delle strutture non viene confrontata;
+  - il contenuto ordinato viene rappresentato nei test tramite coppie `(key, insertion_id)`;
+  - `insertion_id` permette di identificare la stessa inserzione logica nelle tre implementazioni e di distinguere correttamente le chiavi duplicate;
+  - `select` e `rank` devono produrre risultati equivalenti sulla stessa occorrenza logica;
+  - `search` viene confrontata soltanto in termini di presenza/assenza e chiave restituita, perché il contratto consente di restituire una qualsiasi occorrenza in presenza di duplicati;
+  - le cancellazioni vengono applicate ai tre nodi corrispondenti alla stessa inserzione logica;
+  - oltre a sequenze deterministiche viene utilizzata una sequenza pseudocasuale con seed fisso, in modo che eventuali errori siano riproducibili;
+  - nei test può essere utilizzata una lista Python come oracle esterno, senza impiegarla nell'implementazione delle strutture richieste.
+- Motivazione:
+  - verificare l'equivalenza funzionale delle tre implementazioni indipendentemente dalla loro rappresentazione interna;
+  - esercitare esplicitamente i casi con chiavi duplicate;
+  - rendere riproducibili eventuali fallimenti.
+- Stato: definitiva.
