@@ -1,48 +1,93 @@
-﻿from pathlib import Path
-import csv
+﻿"""
+Punto di ingresso del programma sperimentale del primo esercizio.
 
-import matplotlib
+Gestisce gli argomenti da riga di comando, seleziona la configurazione
+quick, calibration o full e avvia l'esecuzione del benchmark.
 
-# Permette di generare grafici anche senza interfaccia grafica.
-# Sarà utile successivamente su PythonAnywhere.
-matplotlib.use("Agg")
+Uso:
+- nella root del progetto python -m esercizio1.main [--quick, --calibrate, --full]
+"""
 
-import matplotlib.pyplot as plt
+import argparse
+from time import perf_counter
+
+from esercizio1.esperimenti.benchmark import execute_benchmark
+from esercizio1.esperimenti.configurazione import (
+    CALIBRATION_CONFIG,
+    FULL_CONFIG,
+    QUICK_CONFIG,
+)
 
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "risultati" / "dati"
-GRAPH_DIR = BASE_DIR / "risultati" / "grafici"
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Benchmark delle strutture per statistiche d'ordine."
+        )
+    )
+
+    group = parser.add_mutually_exclusive_group()
+
+    group.add_argument(
+        "--quick",
+        action="store_true",
+        help="Esegue la configurazione rapida.",
+    )
+
+    group.add_argument(
+        "--calibrate",
+        action="store_true",
+        help="Esegue un run di calibrazione.",
+    )
+
+    group.add_argument(
+        "--full",
+        action="store_true",
+        help="Esegue l'esperimento completo.",
+    )
+
+    return parser.parse_args()
 
 
 def main() -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    GRAPH_DIR.mkdir(parents=True, exist_ok=True)
+    args = parse_arguments()
 
-    dimensioni = [10, 20, 30, 40]
-    valori = [100, 400, 900, 1600]
+    if args.full:
+        mode = "full"
+        config = FULL_CONFIG
 
-    csv_path = DATA_DIR / "verifica_ambiente.csv"
+    elif args.calibrate:
+        mode = "calibration"
+        config = CALIBRATION_CONFIG
 
-    with csv_path.open("w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(["dimensione", "valore"])
-        writer.writerows(zip(dimensioni, valori))
+    else:
+        mode = "quick"
+        config = QUICK_CONFIG
 
-    graph_path = GRAPH_DIR / "verifica_ambiente.png"
+    print(f"Modalità: {mode}")
+    print(f"Dimensioni: {config.sizes}")
+    print(f"Ripetizioni: {config.repetitions}")
 
-    plt.figure()
-    plt.plot(dimensioni, valori, marker="o")
-    plt.xlabel("Dimensione")
-    plt.ylabel("Valore")
-    plt.title("Verifica ambiente di lavoro")
-    plt.tight_layout()
-    plt.savefig(graph_path, dpi=200)
-    plt.close()
+    start = perf_counter()
 
-    print("Ambiente Python funzionante.")
-    print(f"File CSV creato: {csv_path}")
-    print(f"Grafico creato: {graph_path}")
+    (
+        raw_path,
+        aggregate_path,
+        environment_path,
+        measurement_count,
+    ) = execute_benchmark(
+        config,
+        mode,
+    )
+
+    elapsed = perf_counter() - start
+
+    print()
+    print(f"Misure prodotte: {measurement_count}")
+    print(f"Tempo totale: {elapsed:.2f} s")
+    print(f"Dati grezzi: {raw_path}")
+    print(f"Dati aggregati: {aggregate_path}")
+    print(f"Ambiente: {environment_path}")
 
 
 if __name__ == "__main__":

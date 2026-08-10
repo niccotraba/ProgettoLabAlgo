@@ -389,3 +389,24 @@
   per gli esperimenti definitivi.
 - Stato: definitiva salvo eventuale calibrazione dei parametri numerici
   dopo la prima esecuzione del benchmark completo.
+
+  ## D29 — Architettura del benchmark
+
+- Decisione:
+  - la configurazione sperimentale è separata dal codice di misurazione;
+  - i generatori producono input e target prima dell'avvio dei timer;
+  - lo stesso input e gli stessi target logici vengono usati per tutte
+    le strutture nello stesso run;
+  - ogni misura grezza viene rappresentata da un record `Measurement`;
+  - costruzione, query e cancellazione vengono temporizzate separatamente;
+  - i nodi necessari a `rank` e `delete` vengono individuati fuori dal timer;
+  - la cancellazione è l'ultima operazione misurata perché modifica la struttura;
+  - l'altezza viene calcolata fuori dalle regioni temporizzate;
+  - per l'ABR l'altezza viene calcolata iterativamente per gestire anche
+    alberi degenerati;
+  - risultati grezzi e aggregati vengono salvati separatamente;
+  - vengono salvate anche le informazioni sull'ambiente di esecuzione;
+  - sono disponibili modalità `quick`, `calibration` e `full`;
+  - la modalità `calibration` è esclusivamente tecnica e i suoi risultati
+    non vengono utilizzati nell'analisi finale.
+- Stato: definitiva.
