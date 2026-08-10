@@ -346,3 +346,46 @@
   - esercitare esplicitamente i casi con chiavi duplicate;
   - rendere riproducibili eventuali fallimenti.
 - Stato: definitiva.
+
+## D28 — Protocollo sperimentale del primo esercizio
+
+- Decisione:
+  - vengono confrontati quattro scenari di input:
+    1. chiavi distinte pseudocasuali;
+    2. chiavi distinte crescenti;
+    3. chiavi distinte decrescenti;
+    4. chiavi pseudocasuali con molti duplicati;
+  - le dimensioni previste per l'esperimento completo sono
+    `100, 300, 900, 2700, 5000`;
+  - ogni configurazione viene ripetuta 30 volte;
+  - prima delle misure definitive vengono eseguiti 3 warm-up non registrati;
+  - i dati pseudocasuali vengono generati tramite seed deterministici
+    derivati da un seed base `2026`;
+  - nello stesso run le tre strutture ricevono esattamente lo stesso input;
+  - l'ordine di esecuzione delle tre strutture viene ruotato tra i run.
+- Misurazioni:
+  - tempo di costruzione mediante `n` inserimenti;
+  - `search` di chiavi presenti;
+  - `search` di chiavi assenti;
+  - `select`;
+  - `rank`;
+  - `delete(node)`;
+  - altezza di ABR e AVL come metrica strutturale secondaria.
+- Le operazioni non mutanti vengono misurate in batch di 20 chiamate e
+  il tempo totale viene normalizzato per il numero di chiamate.
+- `delete(node)` viene misurato con il nodo già individuato.
+  La ricerca necessaria per cancellare a partire da una chiave non viene
+  inclusa nel timer.
+- Generazione dei dati, preparazione dei target, validazione, output,
+  CSV e grafici vengono esclususi dalle regioni temporizzate.
+- Timer: `time.perf_counter_ns()`.
+- Aggregazione principale:
+  - mediana;
+  - Q1;
+  - Q3;
+  - IQR.
+- Vengono conservati anche tutti i risultati grezzi.
+- Sono previste una modalità `quick` per verifica e una modalità `full`
+  per gli esperimenti definitivi.
+- Stato: definitiva salvo eventuale calibrazione dei parametri numerici
+  dopo la prima esecuzione del benchmark completo.
