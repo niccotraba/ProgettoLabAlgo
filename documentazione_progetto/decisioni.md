@@ -103,22 +103,21 @@
 
 ## D11 — Parametri sperimentali
 
-- Decisione:
-  - dimensioni;
-  - ripetizioni;
-  - seed;
-  - aggregazioni;
-  - tabelle;
-  - grafici
-  saranno definiti nei task sperimentali.
-- Stato: rinviata deliberatamente.
+- Decisione: i parametri sperimentali sono definiti nel protocollo
+  sperimentale del primo esercizio.
+- Parametri principali:
+  - dimensioni: `100, 300, 900, 2700, 5000`;
+  - ripetizioni: `30`;
+  - seed base: `2026`;
+  - aggregazione tramite mediana, Q1, Q3 e IQR.
+- Riferimento: D29.
+- Stato: definitiva.
 
 ## D12 — Firme Python concrete
 
-- Decisione:
-  - il comportamento logico è congelato;
-  - nomi delle classi, annotazioni di tipo, classi astratte e dettagli tecnici saranno definiti nel Task 1.
-- Stato: rinviata deliberatamente.
+- Decisione: le firme Python concrete sono state definite tramite
+  l'interfaccia comune descritta in D13.
+- Stato: definitiva.
 
 
 ## D13 — Interfaccia comune Python
@@ -316,7 +315,7 @@
   - `rank` ha complessità `O(log n)`.
 - Stato: definitiva.
 
-## D26 — Cancellazione nell'AVL aumentato
+## D27 — Cancellazione nell'AVL aumentato
 
 - Decisione:
   - `delete` riceve il nodo preciso;
@@ -329,7 +328,7 @@
   - l'implementazione dettagliata adottata nel progetto è quindi una scelta implementativa coerente con gli invarianti AVL e con il mantenimento di `size`.
 - Stato: definitiva.
 
-## D27 — Strategia dei test comparati
+## D28 — Strategia dei test comparati
 
 - Decisione:
   - lista ordinata, ABR senza `size` e AVL aumentato vengono confrontati tramite la loro interfaccia pubblica comune;
@@ -347,7 +346,7 @@
   - rendere riproducibili eventuali fallimenti.
 - Stato: definitiva.
 
-## D28 — Protocollo sperimentale del primo esercizio
+## D29 — Protocollo sperimentale del primo esercizio
 
 - Decisione:
   - vengono confrontati quattro scenari di input:
@@ -387,10 +386,9 @@
 - Vengono conservati anche tutti i risultati grezzi.
 - Sono previste una modalità `quick` per verifica e una modalità `full`
   per gli esperimenti definitivi.
-- Stato: definitiva salvo eventuale calibrazione dei parametri numerici
-  dopo la prima esecuzione del benchmark completo.
+- Stato: definitiva
 
-  ## D29 — Architettura del benchmark
+  ## D30 — Architettura del benchmark
 
 - Decisione:
   - la configurazione sperimentale è separata dal codice di misurazione;

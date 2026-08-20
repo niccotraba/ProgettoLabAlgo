@@ -1,0 +1,29 @@
+{
+  "mode": "full",
+  "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "python_implementation": "CPython",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "system": "Windows",
+  "release": "11",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",
+  "config": {
+    "sizes": [
+      100,
+      300,
+      900,
+      2700,
+      5000
+    ],
+    "repetitions": 30,
+    "warmup_runs": 3,
+    "query_batch_size": 20,
+    "base_seed": 2026,
+    "scenarios": [
+      "random_distinct",
+      "increasing",
+      "decreasing",
+      "duplicate_heavy"
+    ]
+  }
+}
