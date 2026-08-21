@@ -42,6 +42,8 @@
 \date{}
 
 \begin{document}
+
+% FRONTESPIZIO
 \begin{titlepage}
 \thispagestyle{empty}
 
@@ -82,14 +84,68 @@
     \end{center}
 \end{titlepage}
 
-
+% INDICE
 \tableofcontents
 \newpage
 
+% CAPITOLO 1
 \section{Introduzione}
-\subsection{Obiettivo dell'esercizio} % in cosa consiste il progetto
-\subsection{Organizzazione del lavoro} %in che modalità è stato svolto (come è organizzata di fatto la relazione)
+Il presente elaborato descrive lo svolgimento del primo esercizio del Laboratorio di Algoritmi e Strutture Dati, nel caso specifico dedicato al confronto per le statistiche d'ordine dinamiche.
+\\\\
+Il lavoro comprende: 
+\begin{itemize}
+    \item Implementazione delle strutture dati richieste
+    \item Verifica della loro correttezza
+    \item Successiva analisi sperimentale delle prestazioni
+\end{itemize}
 
+% SOTTO-CAPITOLO 1.1
+\subsection{Obiettivo dell'esercizio} % in cosa consiste il progetto
+L'esercizio richiede di confrontare tre diverse implementazioni di statistiche d'ordine:
+\begin{itemize}
+    \item Lista ordinata collegata
+    \item Albero binario di ricerca non bilanciato privo dell'attributo \texttt{size}
+    \item Albero AVL aumentato con l'attributo \texttt{size} (grandezza sottoalberi)
+\end{itemize}
+Le tre strutture sono state implementate in Python mantenendo un insieme comune di operazioni: 
+\begin{itemize}
+    \item \texttt{insert}
+    \item \texttt{search}
+    \item \texttt{delete}
+    \item \texttt{select}
+    \item \texttt{rank}
+\end{itemize}
+Quest'ultime due costituiscono in particolare l'elemento principale di interesse del confronto, poiché permettono di evidenziare le differenze tra una struttura che non mantiene informazioni aggiuntive sull'ordine degli elementi ed una struttura che al contrario le mantiene (tramite \texttt{size})
+\\\\
+\textbf{La lista ordinata} è stata realizzata mediante nodi esplicitamente collegati, senza utilizzare strutture \textit{built-in} di Python come rappresentazione interna. L'\textbf{ABR} consiste in un albero non bilanciato, le cui prestazioni dipendono fortemente dall'ordine di inserimento delle chiavi. La terza implementazione utilizza un \textbf{AVL}, che mantiene il bilanciamento dell'albero, dove ogni nodo memorizza la dimensione del proprio sotto-albero.
+\\\\
+Il confronto è stato effettuato sia dal punto di vista teorico che speriimentale. Dopo aver verificato la correttezza delle implementazione, sono stati eseguiti benchmark su input di dimensione crescente e con differenti distribuzioni di chiavi. Nello specifico sono stati considerati: 
+\begin{itemize}
+    \item Input casuali
+    \item Input con chiavi distinte
+    \item Input ordinati in senso crescente
+    \item Input ordinati in senso decrescente
+    \item Input caratterizzati dalla presenza di numerosi duplicati
+\end{itemize}
+Le misurazioni ottenute a fine sperimentazione permettono di valutare vantaggi e svantaggi di ciascuna delle tre implementazioni. Permette inoltre di verificare se gli andamenti osservati risultano coerenti con le complessità previste teoricamente. 
+\subsection{Organizzazione del lavoro} %in che modalità è stato svolto (come è organizzata di fatto la relazione)
+Lo svolgimento del progetto è stato suddiviso in più fasi:
+\begin{enumerate}
+    \item In una prima fase sono state definite le caratteristiche comuni delle tre strutture, le convenzioni necessarie per renderle confrontabili.
+    \item In accordo con quanto definito nella fase precedente, sono state realizzate separatamente le tre implementazioni.
+    \item E' stata verificata la correttezza delle tre strutture mediante dei test automatici dedicati alle singole implementazioni e mediante test comparati, con l'obiettivo di osservare se, applicando le stesse sequenze di operazioni, si ottenessero risultati analoghi nonostante le strutture interne differenti.
+    \item E' stato definito un protocollo sperimentale comune, sottoponendo le tre strutture agli stessi dati di ingresso. Durante gli esperimenti, sono stati misurati i \textbf{tempi esecutivi} relativi alla \textit{build} delle strutture ed alle operazioni \texttt{search}, \texttt{select}, \texttt{rank} e \texttt{delete}. Le misurazioni sono state condotte più volte e successivamente aggregate in modo da ridurre l'influenza di variazioni occasionali. 
+\end{enumerate}
+La relazione è organizzata seguendo lo stesso sviluppo logico del lavoro:
+\begin{itemize}
+    \item La sezione 2 introduce gli aspetti teorici necessari al confronto
+    \item La sezione 3 descrive l'organizzazione del codice, la classi implementate, le principali scelte implementative e la strategia di verifica di correttezza.
+    \item La sezione 4 presenta il protocollo sperimentale, i risultati ottenuti e il confronto tra le osservazioni e le ipotesi teoriche.
+    \item La sezione 5 riassume le principali conclusioni emerse.
+\end{itemize}
+
+
+% CAPITOLO 2 
 \clearpage
 \section{Teoria e ipotesi}
 \subsection{Strutture d'ordine dinamiche} % spiegazione teorica delle strutture dinamiche d'ordine utilizzate
@@ -99,6 +155,7 @@
 \subsubsection{AVL aumentato con \texttt{size}}
 \subsection{Assunti ed ipotesi teoriche} % assunti teorici fatti ed ipotesi sperimentali
 
+% Documentazione
 \clearpage
 \section{Documentazione del codice}
 \subsection{Schema ed interazione tra i moduli} 
@@ -107,6 +164,7 @@
 \subsection{Metodi fondamentali} % metodi implementati
 \subsection{Verifica di correttezza}
 
+% Risultati
 \clearpage
 \section{Esperimenti e analisi dei risultati}
 \subsection{Protocollo sperimentale} %come è stato condotto, costruzione degli esperimenti casistica-metodo testato
@@ -126,10 +184,11 @@
 
 \subsection{Sintesi del confronto}
 
+% Conclusioni
 \clearpage
 \section{Conclusioni} %conclusioni dell'esperimento, sintesi
 
-
+% Bibliografia
 \clearpage
 \printbibliography[
     heading=bibintoc,
