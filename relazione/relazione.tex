@@ -145,15 +145,146 @@ La relazione è organizzata seguendo lo stesso sviluppo logico del lavoro:
 \end{itemize}
 
 
-% CAPITOLO 2 
+
+% CAPITOLO 2
 \clearpage
 \section{Teoria e ipotesi}
-\subsection{Strutture d'ordine dinamiche} % spiegazione teorica delle strutture dinamiche d'ordine utilizzate
-\subsection{Strutture confrontate e complessità} % spiegazione del confronto, riepilogo sulle complessità, cosa stiamo misurando?
+Le ipotesi utilizzate nel confronto sperimentale sono state formulate a partire dalle complessità teoriche delle tre strutture, prima dell'interpretazione dei risultati ottenuti. In questo modo è possibile confrontare gli andamenti misurati con un riferimento teorico definito a priori, evitando di adattare le aspettative ai dati sperimentali.
+
+\subsection{Strutture d'ordine dinamiche}
+Una struttura dati dinamica permette di rappresentare un insieme di elementi il cui contenuto può variare dopo operazioni quali per esempio di inserimento e cancellazione. Nel caso delle statistiche d'ordine, oltre alle normali operazioni di modifica e ricerca, permettono di determinare la posizione di un elemento nell'ordinamento o recuperare l'elemento che occupa una determinata posizione
+\\\\
+Nel progetto sono considerate cinque operazioni comuni:
+\begin{itemize}
+    \item \texttt{insert}, per inserire un nuovo elemento;
+    \item \texttt{search}, per cercare un elemento a partire dalla chiave;
+    \item \texttt{delete}, per rimuovere un elemento;
+    \item \texttt{select}, per ottenere l'elemento avente un determinato rango;
+    \item \texttt{rank}, per determinare il rango di un elemento.
+\end{itemize}
+Il rango viene indicizzato a partire da 1: l'elemento minimo ha quindi rango 1, mentre l'elemento massimo ha rango $n$, dove $n$ rappresenta il numero di elementi presenti nella struttura.
+
+Le chiavi duplicate sono ammesse e ogni loro occorrenza rappresenta un nodo distinto. Di conseguenza, due nodi possono avere la stessa chiave ma occupare posizioni differenti nell'ordinamento, con al conseguenza diretta di avere ranghi diversi. Per questo motivo, l'operazione \texttt{rank} è riferita all'identità del nodo e non solo alla chiave.
+
+Analogamente, l'operazione \texttt{delete} riceve il riferimento al nodo preciso da eliminare. Questa scelta permette di rimuovere senza ambiguità una specifica occorrenza anche in presenza di duplicati e consente inoltre di distinguere il costo necessario a individuare un elemento dal costo della cancellazione.
+\\\\
+Il confronto consiste quindi nel valutare come rappresentazioni diverse delle statistiche d'ordine influenzino il costo delle operazioni, con particolare attenzione a \texttt{select} e \texttt{rank}, metodi specifici dell'insieme dinamico.
+
+
+\subsection{Strutture confrontate e complessità}
+Le tre strutture implementano lo stesso insieme di operazioni logiche, ma utilizzano rappresentazioni interne differenti. La prima soluzione mantiene direttamente gli elementi in una lista ordinata; la seconda utilizza un albero binario di ricerca non bilanciato senza informazioni aggiuntive sulla dimensione dei sottoalberi; la terza utilizza invece un AVL aumentato con l'attributo \texttt{size}.
+\\\\
+La Tabella~\ref{tab:complessita-strutture} riassume le \textbf{complessità teoriche} delle singole operazioni considerate nel progetto.
+Per l'ABR, $h$ rappresenta l'altezza dell'albero e può variare considerevolmente a seconda dell'ordine con cui vengono inserite le chiavi. Per l'AVL, invece, il bilanciamento garantisce che l'altezza rimanga dell'ordine di $\log n$.
+\begin{table}[htbp]
+    \centering
+    \caption{Complessità teoriche delle operazioni nelle tre strutture confrontate.}
+    \label{tab:complessita-strutture}
+
+    \begin{tabular}{lccc}
+        \toprule
+        Operazione & Lista ordinata & ABR senza \texttt{size} & AVL con \texttt{size} \\
+        \midrule
+        \texttt{insert}       & $O(n)$      & $O(h)$      & $O(\log n)$ \\
+        \texttt{search}       & $O(n)$      & $O(h)$      & $O(\log n)$ \\
+        \texttt{delete(node)} & $\Theta(1)$ & $O(h)$      & $O(\log n)$ \\
+        \texttt{select}       & $O(n)$      & $O(n)$      & $O(\log n)$ \\
+        \texttt{rank}         & $O(n)$      & $O(n)$      & $O(\log n)$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+\\\\
+La complessità indicata per \texttt{delete(node)} assume che il riferimento al nodo da eliminare sia già disponibile, come previsto dall'interfaccia adottata nel progetto. Non è stata quindi implementata la ricerca implicita del nodo, necessaria se la cancellazione si fosse basata esclusivamente sulla chiave. 
+
 \subsubsection{Lista ordinata}
+La prima struttura è una \textbf{lista doppiamente collegata} mantenuta in ordine crescente rispetto alle chiavi. Ogni nodo contiene i riferimenti al nodo precedente ed al nodo successivo. La struttura mantiene riferimenti espliciti alla testa ed alla coda. 
+
+L'ordinamento della lista permette alla ricerca di interrompersi non appena viene incontrata una chiave maggiore di quella cercata. Nel caso generale, tuttavia, sia la ricerca sia l'inserimento possono richiedere la scansione di una parte lineare della struttura e hanno quindi \textbf{complessità $O(n)$}.
+
+Le operazioni \texttt{select} e \texttt{rank} non dispongono di informazioni aggiuntive sulla posizione dei nodi. Per individuare l'elemento di rango $i$, \texttt{select} deve attraversare la lista a partire dalla testa fino alla posizione desiderata. Analogamente, \texttt{rank} procede dalla testa fino a incontrare il nodo richiesto. Entrambe le operazioni hanno quindi \textbf{complessità $O(n)$ nel caso peggiore}.
+
+Per quanto riguarda la cancellazione, poiché la lista è doppiamente collegata e \texttt{delete} riceve direttamente il nodo da eliminare, la rimozione richiede soltanto l'aggiornamento di un numero costante di riferimenti. In queste condizioni il costo di \texttt{delete(node)} è quindi\textbf{ $\Theta(1)$.}
+
+
 \subsubsection{ABR senza \texttt{size}}
+La seconda struttura è un \textbf{albero binario di ricerca non bilanciato}. Per ogni nodo, le chiavi appartenenti al sotto-albero di sinistra precedono la chiave del nodo nell'ordinamento, mentre quelle appartenenti al sotto-albero destro la seguono. Una \textit{visita inorder} produce quindi una sequenza crescente.
+
+Nell'ABR, le prestazioni delle operazioni fondamentali dipendono dalla sua \textbf{altezza $h$}. Ricerca, inserimento e cancellazione richiedono infatti, nel caso generale, di percorrere un cammino dell'albero, quindi la \textbf{complessità è $O(h)$}.
+
+L'albero non effettua operazioni di bilanciamento e la altezza dipende dalla sequenza di inserimento. Nel caso favorevole, un albero sufficientemente bilanciato presenta un'altezza dell'ordine di\textbf{ $\log n$}; nel caso peggiore, invece, può degenerare in una catena di $n$ nodi, raggiungendo \textbf{$h = n$},  e quindi \textbf{altezza $\Theta(n)$}.
+
+Questa implementazione non memorizza l'attributo \texttt{size} nei nodi, e non è possibile determinare direttamente quanti elementi precedano un nodo. Le operazioni \texttt{select} e \texttt{rank} vengono quindi realizzate percorrendo l'ordinamento tramite una visita inorder. Nel caso peggiore entrambe richiedono la visita di un numero lineare di nodi e hanno \textbf{complessità $O(n)$}.
+
+
 \subsubsection{AVL aumentato con \texttt{size}}
-\subsection{Assunti ed ipotesi teoriche} % assunti teorici fatti ed ipotesi sperimentali
+La terza struttura è un \textbf{albero AVL}, cioè un albero binario di ricerca nel quale viene mantenuto un vincolo di bilanciamento sulle altezze dei sotto-alberi. Per ogni nodo la differenza tra l'altezza del sotto-albero sinistro e quella del sotto-albero destro rimane compresa tra $-1$ e $1$ (massimo un nodo di differenza).
+
+Quando un inserimento o una cancellazione altera tale proprietà, il bilanciamento viene ripristinato mediante delle operazioni di rotazione. Questo permette di mantenere l'altezza dell'albero nell'ordine di \textbf{$O(\log n)$} e garantire quindi una \textbf{complessità logaritmica} per le operazioni che percorrono un singolo cammino dell'albero.
+
+Oltre alle informazioni necessarie al bilanciamento, ogni nodo memorizza l'attributo \texttt{size}, definito come il numero di nodi totali presenti nei due sotto-alberi del nodo, in aggiunta al nodo stesso:
+
+\[
+    \texttt{size}(x)
+    =
+    \texttt{size}(x.\texttt{left})
+    +
+    \texttt{size}(x.\texttt{right})
+    + 1.
+\]
+
+La dimensione di un figlio assente è nulla.  
+\\\\
+Nell'operazione \texttt{select}, la dimensione del sotto-albero sinistro permette di determinare il rango del nodo corrente e di scegliere quale ramo visitare. Nell'operazione \texttt{rank}, invece, il rango viene ricostruito considerando la dimensione dei sotto-alberi incontrati durante la risalita verso la radice.
+\\
+Poiché entrambe le operazioni percorrono soltanto un cammino dell'AVL, la loro \textbf{complessità è {$O(\log n)$}}. Il mantenimento dell'attributo \texttt{size} introduce aggiornamenti aggiuntivi ma che, essendo effettuati localmente, non modificano la complessità asintotica delle operazioni.
+
+
+\subsection{Assunti ed ipotesi teoriche}
+
+A partire dalle complessità precedenti sono state formulate le ipotesi da verificare sperimentalmente. Gli esperimenti considerano quattro differenti tipologie di input: 
+\begin{itemize}
+    \item Chiavi distinte in ordine pseudocasuale;
+    \item chiavi distinte in ordine crescente;
+    \item chiavi distinte in ordine decrescente;
+    \item chiavi pseudocasuali con numerosi duplicati;
+\end{itemize}
+
+La prima misura considerata è la costruzione della struttura, definita come il tempo complessivo necessario a eseguire $n$ inserimenti:
+\begin{enumerate}
+    \item Per la lista ordinata si prevede una \textbf{forte dipendenza dall'ordine degli elementi}. 
+        \begin{itemize}
+            \item Con input crescente, ogni elemento deve essere inserito verso la coda, richiedendo una scansione completa della lista: \textbf{il costo complessivo atteso è quindi $\Theta(n^2)$}
+            \item Con input decrescente, ogni elemento viene inserito in testa dopo un numero costante di controlli: il \textbf{costo complessivo atteso è di $\Theta{n}$}
+            \item Sia con input casuale distinto, sia con presenta di duplicati, la posizione di inserimento varia. In entrambi i casi, mediamente deve essere attraversata una porzione lineare della lista, producendo un \textbf{comportamento atteso quadratico $\Theta(n^2)$}
+        \end{itemize}
+    \item Anche l'ABR \textbf{dipende fortemente dall'ordine di inserimento}:
+        \begin{itemize}
+            \item Un input crescente e decrescente rappresentano i casi più sfavorevoli, poiché l'albero degenera in una catena, raggiungendo altezza $\Theta(n)$ e producendo un \textbf{costo complessivo di costruzione atteso $\Theta(n^2)$.}
+            \item Con un input casuali (con o senza duplicati), l'altezza attesa è molto inferiore a $n$, ed il \textbf{costo complessivo atteso} dovrebbe risultare vicino a $n \log n$. Tuttavia, in caso di duplicati, ci si attende un l'altezza mediamente superiore rispetto al casuali distinto, poiché le chiavi uguali seguono il ramo destro.
+        \end{itemize}
+    \item Per l'AVL di prevede un \textbf{comportamento più stabile}, poiché tra i vari scenari, il bilanciamento conserva un'altezza $O(\log n)$, indipendentemente dall'ordine di inserimento. Il \textbf{costo complessivo di costruzione atteso è di $O(n \log n)$.}
+\end{enumerate}
+
+Per quanto riguarda le restanti operazioni:
+\begin{enumerate}
+    \item Per l'operazione di \texttt{search}, la lista ordinata presenta un \textbf{costo atteso lineare} rispetto alla sua dimensione, poiché nel caso la chiave assente fosse al di sopra del massimo, è necessario percorrere l'intera lista.
+    \\
+    Per l'ABR la ricerca \textbf{dipende esclusivamente dall'altezza effettiva dell'albero}, e dovrebbe quindi peggiorare sensibilmente nei casi crescente e decrescente. 
+    \\
+    Nell'AVL è \textbf{atteso un comportamento $O(\log n)$} in tutti gli scenari.
+
+    \item Le operazioni di \texttt{select} e \texttt{rank} costituiscono il confronto principale: nella lista e nell'ABR (privo di \texttt{size}), entrambe le operazioni necessitano una scansione dell'ordinamento, quindi ci si attende una \textbf{crescita lineare con $n$}; nell'AVL aumentato, l'attributo \texttt{size} consente di eseguire entrambe le operazioni in $O(\log n)$, con una \textbf{crescita sensibilmente più contenuta}.
+
+    \item Per il metodo \texttt{delete}, il riferimento al nodo è già disponibile. Nella lista lo scollegamento prevede un numero costante di aggiornamenti, quindi il \textbf{costo atteso è di $\Theta(1)$}.
+    \\
+    Nell'ABR il limite superiore è dettato dall'altezza $h$, ma il costo effettivo dipende dalla configurazione del nodo da eliminare. 
+    \\ 
+    Nell'AVL la cancellazione ha un limite $O(\log n)$, e può inoltre richiedere aggiornamenti relativi a rotazioni per ristabilire il bilanciamento.
+\end{enumerate}
+Dal momento che la cancellazione viene misurata una volta per ciascun run, i relativi tempi saranno molto ridotti, motivo per cui le misure relative a \texttt{delete} vengono considerate con maggiore cautela rispetto alle altre. 
+\\\\
+Il confronto è basato principalmente sull'andamento delle curve al crescere di $n$ e sulla coerenza qualitativa con le ipotesi formulate. Questo perché i tempi di esecuzioni effettivi sono influenzati anche da costi costanti, interpreti Python e sistema operativo.
+
 
 % Documentazione
 \clearpage
@@ -194,5 +325,6 @@ La relazione è organizzata seguendo lo stesso sviluppo logico del lavoro:
     heading=bibintoc,
     title={Bibliografia}
 ]
+
 
 \end{document}
