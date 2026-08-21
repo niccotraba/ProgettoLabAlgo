@@ -408,3 +408,25 @@
   - la modalità `calibration` è esclusivamente tecnica e i suoi risultati
     non vengono utilizzati nell'analisi finale.
 - Stato: definitiva.
+
+## D31 — Presentazione e interpretazione dei risultati
+
+- Decisione:
+  - i risultati sperimentali di riferimento sono quelli prodotti dalla
+    modalità `full`;
+  - vengono utilizzate principalmente le mediane delle 30 ripetizioni;
+  - per ogni coppia scenario-operazione vengono generati:
+    - un grafico comparativo tra lista ordinata, ABR e AVL;
+    - una tabella compatta con i valori mediani;
+  - i grafici utilizzano etichette in italiano;
+  - i risultati temporali vengono visualizzati in microsecondi;
+  - i grafici vengono generati tramite Matplotlib e salvati come file PNG;
+  - vengono generati tutti i grafici possibili, ma nella relazione saranno
+    inclusi soltanto quelli che mostrano andamenti significativi;
+  - `build`, `select` e `rank` sono considerati i confronti principali;
+  - i risultati di `delete(node)` vengono interpretati con maggiore cautela
+    perché si misura una sola cancellazione per run e i tempi sono molto
+    ridotti;
+  - una curva graficamente vicina allo zero non viene interpretata come
+    tempo nullo, ma come tempo molto inferiore rispetto alla scala del grafico.
+- Stato: definitiva.
