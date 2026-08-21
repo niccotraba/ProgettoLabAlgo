@@ -1,0 +1,139 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[
+    font=small,
+    labelfont=bf
+]{caption}
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none
+]{biblatex}
+\addbibresource{bibliografia.bib}
+
+
+
+\geometry{margin=2.5cm}
+\setlength{\headheight}{14pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{\small Niccolò Trabalzini}
+\fancyhead[R]{\small Laboratorio di Algoritmi e Strutture Dati}
+
+\fancyfoot[C]{\thepage}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\graphicspath{{figure/}}
+
+\date{}
+
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+
+    \begin{center}
+        \includegraphics[
+            width=15cm,
+            keepaspectratio
+        ]{Logo_Unifi_2025.png}
+        \rule[0.1cm]{15.8cm}{0.1mm}
+        \rule[0.5cm]{15.8cm}{0.6mm} 
+
+        \LARGE
+
+        \textbf{Laboratorio di Algoritmi e Strutture Dati}
+
+        \vspace*{1cm}
+        
+        \huge
+        Confronto  tra implementazioni di statistiche d'ordine dinamiche
+
+        \normalsize
+        \vspace*{3.5cm}
+
+        \begin{minipage}[t]{0.47\textwidth}
+	       {Docente corso:} \vspace{0.3em} \\
+              {\large \textbf{Prof. Simone Marinai}} \vspace{1em}  \\
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.47\textwidth}\raggedleft
+	       {Studente:} \hspace{-0.9em} \vspace{0.3em} \\
+              {\large \textbf{Niccolò Trabalzini}} \\
+              {\footnotesize mat. 7112467}
+        \end{minipage}
+
+        \vfill
+        Anno accademico 2026/2027
+            
+    \end{center}
+\end{titlepage}
+
+
+\tableofcontents
+\newpage
+
+\section{Introduzione}
+\subsection{Obiettivo dell'esercizio} % in cosa consiste il progetto
+\subsection{Organizzazione del lavoro} %in che modalità è stato svolto (come è organizzata di fatto la relazione)
+
+\clearpage
+\section{Teoria e ipotesi}
+\subsection{Strutture d'ordine dinamiche} % spiegazione teorica delle strutture dinamiche d'ordine utilizzate
+\subsection{Strutture confrontate e complessità} % spiegazione del confronto, riepilogo sulle complessità, cosa stiamo misurando?
+\subsubsection{Lista ordinata}
+\subsubsection{ABR senza \texttt{size}}
+\subsubsection{AVL aumentato con \texttt{size}}
+\subsection{Assunti ed ipotesi teoriche} % assunti teorici fatti ed ipotesi sperimentali
+
+\clearpage
+\section{Documentazione del codice}
+\subsection{Schema ed interazione tra i moduli} 
+\subsection{Classi ed interfaccia comune} 
+\subsection{Scelte implementative} 
+\subsection{Metodi fondamentali} % metodi implementati
+\subsection{Verifica di correttezza}
+
+\clearpage
+\section{Esperimenti e analisi dei risultati}
+\subsection{Protocollo sperimentale} %come è stato condotto, costruzione degli esperimenti casistica-metodo testato
+
+\subsubsection{Piattaforma sperimentale}
+\subsubsection{Dati utilizzati} %che dati sono stati utilizzati, quanti batch
+\subsubsection{Scenari di input} % le casistiche testate (ascending, discending)
+\subsubsection{Ripetizioni e misurazioni}
+
+\subsection{Risultati sperimentali} % quali casi offrono le informaizonie più rilevanti
+
+\subsubsection{Costruzione} 
+\subsubsection{Ricerca}
+\subsubsection{\texttt{select}}
+\subsubsection{\texttt{rank}}
+\subsubsection{Cancellazione}
+
+\subsection{Sintesi del confronto}
+
+\clearpage
+\section{Conclusioni} %conclusioni dell'esperimento, sintesi
+
+
+\clearpage
+\printbibliography[
+    heading=bibintoc,
+    title={Bibliografia}
+]
+
+\end{document}
