@@ -41,6 +41,9 @@
 
 \date{}
 
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
 \begin{document}
 
 % FRONTESPIZIO
@@ -289,11 +292,122 @@ Il confronto è basato principalmente sull'andamento delle curve al crescere di 
 % Documentazione
 \clearpage
 \section{Documentazione del codice}
-\subsection{Schema ed interazione tra i moduli} 
-\subsection{Classi ed interfaccia comune} 
-\subsection{Scelte implementative} 
-\subsection{Metodi fondamentali} % metodi implementati
+Il codice relativo all'esercizio è stato organizzato separando tre aspetti principali del progetto: 
+\begin{itemize}
+    \item implementazione delle strutture dati, contenuti nel modulo \texttt{strutture}.
+    \item conduzione dell'esperimento, contenuto nel modulo \texttt{esperimenti}: vengono qui raccolte la logica necessaria alla generazione degli input, alla misurazione ed alla produzione di risultati.
+    \item verifica di correttezza, contenuta nel modulo \texttt{test}, dedicata al controllo delle implementazioni.
+\end{itemize}
+
+\subsection{Strutture dati e interfaccia comune} 
+La Figura ~\ref{fig:uml-strutture} rappresenta le principali classi utilizzate ad implementare le tre strutture dati e i contratti comuni che ne definiscono l'interfaccia.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figure/uml-strutture.png}
+    \caption{Schema delle classi utilizzate per le tre strutture dati e
+    delle relative interfacce comuni.}
+    \label{fig:uml-strutture}
+\end{figure}
+Le tre strutture sono state implementate direttamente nel progetto, senza utilizzare implementazioni esterne delle strutture dati richieste.
+\\
+\\
+Affinché fosse possibile confrontare le tre strutture, sono stati definiti due protocolli mediante \texttt{typing.Protocol}. Essi svolgono il ruolo di \textbf{contratto comune} senza introdurre una gerarchia di ereditarietà tra le classi concrete.
+\\
+Il primo protocollo è \texttt{OrderStatisticNode}, che definisce le informazioni che devono essere condivise da tutti i nodi: 
+\begin{itemize}
+    \item la chiave \texttt{key}
+    \item l'identificativo di inserimento \texttt{indertion\_id}
+    \item il riferimento \texttt{owner}, utilizzato per identificare la struttura del nodo
+\end{itemize}
+I tre tipi concreti di nodo estendono questo insieme minimo di informazioni in funzione della struttura alla quale appartengono:
+\begin{itemize}
+    \item \texttt{LinkedListNode} aggiunge i riferimenti \texttt{prev} e \texttt{next}, necessari a realizzare la lista doppiamente collegata.
+    \item \texttt{BSTNode} aggiunge invece i riferimenti \texttt{parent}, \texttt{left} e \texttt{right}, che descrivono la struttura dell'albero binario di ricerca.
+    \item \texttt{AVLNode} possiede gli stessi collegamenti di un nodo di albero e aggiunge gli attributi \texttt{height} e \texttt{size}.
+\end{itemize}
+
+Il secondo protocollo, \texttt{OrderStatisticStructure}, definisce l'interfaccia pubblica condivisa dalle tre strutture, e comprende il calcolo della dimensione e le operazioni \texttt{insert}, \texttt{search}, \texttt{delete}, \texttt{select} e \texttt{rank}.
+Le classi concrete non ereditano direttamente dal protocollo, ma ne soddisfano la struttura implementando le firme richieste:
+\begin{itemize}
+    \item La classe \texttt{OrderedLinkedList} rappresenta la lista ordinata: le sue operazioni agiscono sui collegamenti dei nodi e mantengono le chiavi in ordine crescente.
+    \item La classe \texttt{BinarySearchTree} implementa l'albero binario di ricerca non bilanciato: mantiene il riferimento alla radice e utilizza i collegamenti tra padre e figli; non viene memorizzata nei nodi informazioni relative ai sotto-alberi.
+    \item La classe \texttt{OrderStatisticAVL} rappresenta l'AVL aumentato: la classe mantiene aggiornati altezza e dimensione dei sotto-alberi; esegue le rotazioni necessarie al bilanciamento.  
+\end{itemize}
+
+\subsubsection{Metodi fondamentali delle classi}
+Le classi \texttt{Node} hanno la funzione di memorizzare le informazioni relative al singolo elemento. Non espongono di conseguenza metodi. 
+\\
+\\
+Le operazioni sulle strutture sono invece implementate all'interno delle classi \texttt{Structure}. Tutte e tre le implementazioni espongono i seguenti metodi pubblici: 
+\begin{itemize}
+    \item \texttt{\_\_len\_\_()}, che restituisce il numero di nodi presenti nella struttura;
+    \item \texttt{insert(key)}, che crea e inserisce un nuovo nodo e ne restituisce il riferimento;
+    \item \texttt{search(key)}, che ricerca una qualsiasi occorrenza della chiave specificata;
+    \item \texttt{delete(Node)}, che elimina il nodo indicato;
+    \item \texttt{select(index)}, che restituisce il nodo avente il rango richiesto;
+    \item \texttt{rank(Node)}, che restituisce il rango occupato dal nodo nell'ordinamento.
+\end{itemize}
+Nello specifico: 
+\begin{itemize}
+    \item in \texttt{OrderedLinkedList} le operazioni vengono realizzate tramite la scansione e la modifica dei collegamenti tra i nodi
+    \item \texttt{BinarySearchTree} utilizza invece i seguenti metodi ausiliari: 
+    \begin{itemize}
+        \item \texttt{\_successor()}, che  determina il successore di un nodo nella visita inorder.
+        \item \texttt{\_transplant}, che viene utilizzato durante la cancellazione per sostituire un sottoalbero con un altro mantenendo corretti i riferimenti ai nodi padre.
+    \end{itemize}
+    \item \texttt{OrderStatisticAVL} richiede metodi ausiliari più ampi:
+    \begin{itemize}
+        \item \texttt{\_update} ricalcola localmente \texttt{height} e \texttt{size}
+        \item \texttt{\_left\_rotate} e \texttt{\_right\_rotate} implementano le rotazioni elementari dell'albero
+        \item \texttt{\_rebalance\_from} risale verso la radice aggiornando i metadati e ripristinando il bilanciamento
+        \item altri metodi ausiliari permettono di ottenere altezza e dimensione dei sotto alberi, calcolare il fattore di ribilanciamento e supportare le operazioni di cancellazione
+    \end{itemize}
+\end{itemize}
+
+\subsection{Architettura della sperimentazione} 
+La logica utilizzata per eseguire gli esperimenti è mantenuta separata dalle implementazioni delle strutture dati. La Figura~\ref{fig:uml-esperimento} mostra il flusso principale tra i moduli coinvolti.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figure/uml-esperimento.png}
+    \caption{Flusso di interazione tra i moduli utilizzati per la
+    conduzione e la presentazione degli esperimenti.}
+    \label{fig:uml-esperimento}
+\end{figure}
+
+Si evince che: 
+\begin{itemize}
+    \item \texttt{main.py} rappresenta il punto di ingresso: legge gli argomenti forniti da riga di comando e permette di selezionare una delle modalità disponibili: \texttt{quick}, destinata all'esecuzione rapida del benchmark surante lo sviluppo, usato per effettuare dei controlli con un numero ridotto di misurazioni; \texttt{calibration}, utilizzata come esecuzione tecnica per stimare il costo dell'esperimento; \texttt{full}, che esegue invece il protocollo sperimentale completo. 
+    \item \texttt{configurazioni.py} definisce le tre configurazioni associate alle modalità. Contiene la classe \texttt{BenchmarkConfig} che raccoglie i parametri da utilizzare (dimensione inputs, numeri di ripetizioni, dimensione del batch, seed di base e scenari). 
+    \item \texttt{benchmark.py} rappresenta l'orchestratore dell'esperimento. Dopo aver ricevuto modalità e parametri da \texttt{main.py} e \texttt{configurazioni.py}, coordina la generazione dei dati, la costruzione delle strutture, l'esecuzione delle operazioni e la raccolta dei risultati.
+    \item Il modulo \texttt{generatori.py} produce gli input corrispondenti ai diversi scenari e prepara i target necessari alle operazioni di ricerca e di statistica d'ordine.
+    \item \texttt{misurazioni.py} contiene le funzioni utilizzate per misurare sia la costruzione sia le operazioni singole o eseguite in batch. Lo stesso modulo calcola anche alcune metriche strutturali, come l'altezza degli alberi e, per l'AVL, il valore di \texttt{size} memorizzato nella radice.
+    \item Le misure vengono raccolte in \texttt{Measurement}, sempre da \texttt{benchmark.py}
+    \item \texttt{report.py} riceve l'insieme delle misure grezze, calcola le statistiche aggregate e salva separatemente i dati grezzi, i dati aggregati e le informaizoni relative all'esecuzione. 
+    \item \texttt{presentazione\_risultati.py} legge esclusivamente il dataset aggregato prodotto dalla modalità \texttt{full} e genera le tabelle CSV e i grafici PNG utilizzati per l'analisi
+\end{itemize}
+
+\subsection{Scelte implementative}
+Di seguito vengono presentate le scelte implementative fatte per rendere coerente il confronto tra le strutture dati e per eliminare ambiguità nell'interpretazione delle operazioni: 
+\begin{itemize}
+    \item E' stato usato \texttt{typing.Protocol} invece che una gerarchia di ereditarietà per rendere le tre struttura (ed i tre nodi) completamente indipendenti, dal momento che non condividono una logica comune. Ad essere unfiforme è solo il contratto. 
+    \item Le chiavi duplicate sono ammesse e ciascuna occorrenza è rappresentata come nodo distinto. L'attributo comune \textt{insertion\_id} è utilizzato per tenere traccia dell'ordine dei duplicati. Nella lista, una occorrenza è inserita dopo quelle con stessa chiave, mentre negli alberi l'uguaglianza segue il ramo destro. Le rotazioni nell'AVL possono modificare la posizione, ma la visita inorder è mantenuta crescente. 
+    \item Il rango è indicizzato a partire da 1. Appartiene quindi all'intervallo compreso tra 1 e $n$. Per via dei duplicati, il rango è riferito a l'intera identità del nodo.
+    \item \texttt{delete} riceve direttamente il nodo da rimuovere, così da distinguere i tempi di ricerca dal costo effettivo di cancellazione. 
+    \item Nell'ABR sono state preferite implementazioni iterative delle operazioni di ricerca, inserimento, minimo e successore. 
+    \item Sono definiti i comportamenti per i casi limiti: una ricerca su una struttura vuota restituisce \texttt{None}; un rango non valido passato a \texttt{select} restituisce \texttt{IndexError}; se un nodo è estraneo o già eliminato, \texttt{rank} restituisce \texttt{ValueError}; \texttt{delete} resituisce \textit{False} nei casi descritti. 
+\end{itemize}
+
 \subsection{Verifica di correttezza}
+La correttezza delle implementazioni sono state verificate con test automatici, eseguiti con \texttt{pytest}, con lo scopo di controllare che le operazioni rispettino il contratto comune e mantengano gli invariati previsti dopo sequenze di operazioni: 
+\begin{itemize}
+    \item vengono testate le singole strutture, inclusi i casi limite e la gestione dei duplicati. 
+    \item vengono eseguiti dei test comparati tra le tre struttura, in modo da verificare che le stesse sequenze di operazioni producano risultati analoghi sulle tre strutture, indipendentemente dalla logica interna.
+    \item vengono verificati i principali componenti della pipeline di sperimentazione.
+\end{itemize}
+Nei test sono usate sequenze di operazioni deterministiche e pseudocasuali generate da seed fisso. 
+
 
 % Risultati
 \clearpage
