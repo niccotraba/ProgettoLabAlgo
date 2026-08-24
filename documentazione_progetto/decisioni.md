@@ -1,11 +1,7 @@
 # Registro delle decisioni
-
-## Stato
-
-- Versione: 1.0
-- Data di congelamento: 2026-08-03
-
 ---
+
+# Decisioni generali
 
 ## D01 — Strutture del primo esercizio
 
@@ -30,7 +26,7 @@
   - ricerca viene implementata per completezza e utilità operativa.
 - Stato: definitiva.
 
-## D03 — Indicizzazione del rango
+## D03 — Indicizzazione del rango per il primo esercizio
 
 - Decisione: rango indicizzato da 1.
 - Conseguenza:
@@ -38,7 +34,7 @@
   - il massimo ha rango `n`.
 - Stato: definitiva.
 
-## D04 — Gestione dei duplicati
+## D04 — Gestione dei duplicati per il primo esercizio
 
 - Decisione:
   - duplicati ammessi;
@@ -48,14 +44,14 @@
   - nella lista viene inserita dopo le occorrenze uguali.
 - Stato: definitiva.
 
-## D05 — Risultato di `insert`
+## D05 — Risultato di `insert` per il primo esercizio
 
 - Decisione: restituisce il nodo appena creato.
 - Non restituisce il rango.
 - Il rango può essere ottenuto successivamente con `rank(node)`.
 - Stato: definitiva.
 
-## D06 — Risultato di `delete`
+## D06 — Risultato di `delete` per il primo esercizio
 
 - Decisione:
   - riceve il nodo preciso;
@@ -64,7 +60,7 @@
   - `False` indica nodo non appartenente alla struttura.
 - Stato: definitiva.
 
-## D07 — Ricorsione e iterazione
+## D07 — Ricorsione e iterazione per il primo esercizio
 
 - Decisione:
   - seguire lo stile dello pseudocodice del corso;
@@ -78,7 +74,7 @@
   - quicksort standard;
   - ricorsivo;
   - in-place;
-  - partizione di Lomuto;
+  - partizione come vista a lezione, con A[j] <= pivot
   - ultimo elemento come pivot.
 - Stato: definitiva.
 
@@ -94,12 +90,16 @@
 ## D10 — Metriche del secondo esercizio
 
 - Decisione:
-  - tempo di esecuzione;
-  - numero di confronti;
+  - tempo di esecuzioneUno scambio è ogni esecuzione dell'operazione algoritmica A[x] <-> A[y], anche quando x == y. Sono quindi contati anche gli autoscambi
+  - numero di confronti: Un confronto è un confronto tra valori dell'array effettuato per stabilirne l'ordine.
   - numero di scambi.
 - Il tempo viene misurato sulla versione non strumentata.
 - Confronti e scambi vengono misurati separatamente.
 - Stato: definitiva.
+
+---
+
+# Decisioni su Esercizio 1
 
 ## D11 — Parametri sperimentali
 
@@ -430,3 +430,14 @@
   - una curva graficamente vicina allo zero non viene interpretata come
     tempo nullo, ma come tempo molto inferiore rispetto alla scala del grafico.
 - Stato: definitiva.
+
+---
+# Decisioni esercizio 2
+
+## D32 — Protocollo sperimentale del secondo esercizio
+- Il secondo esercizio avrà un protocollo sperimentale dedicato.
+- Le esecuzioni complete del notebook devono produrre dati differenti.
+- Il seed dell'esecuzione deve essere registrato.
+- Dimensioni e ripetizioni saranno stabilite considerando sia il costo
+  quadratico di Selection Sort sia la profondità ricorsiva del Quick Sort
+  standard su input sfavorevoli.

@@ -42,10 +42,10 @@ Decisioni:
 
 - implementazione ricorsiva;
 - ordinamento in-place;
-- partizione di Lomuto;
+- partizione come vista a lezione;
 - ultimo elemento del sottoarray come pivot;
 - condizione di partizione coerente con lo pseudocodice del corso;
-- nessuna variante randomizzata nella versione iniziale;
+- nessuna variante randomizzata;
 - una versione non strumentata per i tempi;
 - una versione strumentata per confronti e scambi.
 
@@ -81,11 +81,11 @@ Non saranno inclusi nel timer:
 
 ### Confronti
 
-Si conteranno i confronti tra valori dell'array.
+Un confronto è un confronto tra valori dell'array effettuato per stabilirne l'ordine.
 
 ### Scambi
 
-Si conteranno gli scambi effettivi tra due posizioni distinte.
+Uno scambio è ogni esecuzione dell'operazione algoritmica A[x] <-> A[y], anche quando x == y. Sono quindi contati anche gli autoscambi
 
 Tempi, confronti e scambi saranno analizzati separatamente.
 
@@ -120,7 +120,7 @@ Gli algoritmi saranno verificati su:
 
 Il notebook deve alternare celle Markdown e celle di codice.
 
-Struttura prevista:
+Struttura di bozza prevista:
 
 1. titolo e obiettivo;
 2. teoria essenziale;
