@@ -10,16 +10,13 @@
 \usepackage{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
+\usepackage{subcaption}
+\usepackage{float}
 \usepackage[
     font=small,
     labelfont=bf
 ]{caption}
-\usepackage[
-    backend=biber,
-    style=numeric,
-    sorting=none
-]{biblatex}
-\addbibresource{bibliografia.bib}
+
 
 
 
@@ -108,8 +105,9 @@ L'esercizio richiede di confrontare tre diverse implementazioni di statistiche d
 \begin{itemize}
     \item Lista ordinata collegata
     \item Albero binario di ricerca non bilanciato privo dell'attributo \texttt{size}
-    \item Albero AVL aumentato con l'attributo \texttt{size} (grandezza sottoalberi)
+    \item Albero AVL aumentato con l'attributo \texttt{size} (grandezza sotto-alberi)
 \end{itemize}
+Le statistiche d'ordine permettono di estendere una struttura dinamica con operazioni per determinare la posizione di un elemento nell'ordinamento~\cite{cormen2009,slide-asd-2025}.
 Le tre strutture sono state implementate in Python mantenendo un insieme comune di operazioni: 
 \begin{itemize}
     \item \texttt{insert}
@@ -122,7 +120,7 @@ Quest'ultime due costituiscono in particolare l'elemento principale di interesse
 \\\\
 \textbf{La lista ordinata} è stata realizzata mediante nodi esplicitamente collegati, senza utilizzare strutture \textit{built-in} di Python come rappresentazione interna. L'\textbf{ABR} consiste in un albero non bilanciato, le cui prestazioni dipendono fortemente dall'ordine di inserimento delle chiavi. La terza implementazione utilizza un \textbf{AVL}, che mantiene il bilanciamento dell'albero, dove ogni nodo memorizza la dimensione del proprio sotto-albero.
 \\\\
-Il confronto è stato effettuato sia dal punto di vista teorico che speriimentale. Dopo aver verificato la correttezza delle implementazione, sono stati eseguiti benchmark su input di dimensione crescente e con differenti distribuzioni di chiavi. Nello specifico sono stati considerati: 
+Il confronto è stato effettuato sia dal punto di vista teorico che sperimentale. Dopo aver verificato la correttezza delle implementazione, sono stati eseguiti benchmark su input di dimensione crescente e con differenti distribuzioni di chiavi. Nello specifico sono stati considerati: 
 \begin{itemize}
     \item Input casuali
     \item Input con chiavi distinte
@@ -135,7 +133,7 @@ Le misurazioni ottenute a fine sperimentazione permettono di valutare vantaggi e
 Lo svolgimento del progetto è stato suddiviso in più fasi:
 \begin{enumerate}
     \item In una prima fase sono state definite le caratteristiche comuni delle tre strutture, le convenzioni necessarie per renderle confrontabili.
-    \item In accordo con quanto definito nella fase precedente, sono state realizzate separatamente le tre implementazioni.
+    \item In accordo con quanto definito nella fase precedente, sono state realizzate separatamente le tre implementazioni seguendo l'impostazione presentata nel materiale del corso~\cite{slide-asd-2025}.
     \item E' stata verificata la correttezza delle tre strutture mediante dei test automatici dedicati alle singole implementazioni e mediante test comparati, con l'obiettivo di osservare se, applicando le stesse sequenze di operazioni, si ottenessero risultati analoghi nonostante le strutture interne differenti.
     \item E' stato definito un protocollo sperimentale comune, sottoponendo le tre strutture agli stessi dati di ingresso. Durante gli esperimenti, sono stati misurati i \textbf{tempi esecutivi} relativi alla \textit{build} delle strutture ed alle operazioni \texttt{search}, \texttt{select}, \texttt{rank} e \texttt{delete}. Le misurazioni sono state condotte più volte e successivamente aggregate in modo da ridurre l'influenza di variazioni occasionali. 
 \end{enumerate}
@@ -152,12 +150,13 @@ La relazione è organizzata seguendo lo stesso sviluppo logico del lavoro:
 % CAPITOLO 2
 \clearpage
 \section{Teoria e ipotesi}
-Le ipotesi utilizzate nel confronto sperimentale sono state formulate a partire dalle complessità teoriche delle tre strutture, prima dell'interpretazione dei risultati ottenuti. In questo modo è possibile confrontare gli andamenti misurati con un riferimento teorico definito a priori, evitando di adattare le aspettative ai dati sperimentali.
+Le ipotesi utilizzate nel confronto sperimentale sono state formulate a partire dalle complessità teoriche delle tre strutture~\cite{cormen2009,slide-asd-2025}, prima dell'interpretazione dei risultati ottenuti. In questo modo è possibile confrontare gli andamenti misurati con un riferimento teorico definito a priori, evitando di adattare le aspettative ai dati sperimentali.
 
 \subsection{Strutture d'ordine dinamiche}
 Una struttura dati dinamica permette di rappresentare un insieme di elementi il cui contenuto può variare dopo operazioni quali per esempio di inserimento e cancellazione. Nel caso delle statistiche d'ordine, oltre alle normali operazioni di modifica e ricerca, permettono di determinare la posizione di un elemento nell'ordinamento o recuperare l'elemento che occupa una determinata posizione
 \\\\
 Nel progetto sono considerate cinque operazioni comuni:
+
 \begin{itemize}
     \item \texttt{insert}, per inserire un nuovo elemento;
     \item \texttt{search}, per cercare un elemento a partire dalla chiave;
@@ -165,6 +164,7 @@ Nel progetto sono considerate cinque operazioni comuni:
     \item \texttt{select}, per ottenere l'elemento avente un determinato rango;
     \item \texttt{rank}, per determinare il rango di un elemento.
 \end{itemize}
+
 Il rango viene indicizzato a partire da 1: l'elemento minimo ha quindi rango 1, mentre l'elemento massimo ha rango $n$, dove $n$ rappresenta il numero di elementi presenti nella struttura.
 
 Le chiavi duplicate sono ammesse e ogni loro occorrenza rappresenta un nodo distinto. Di conseguenza, due nodi possono avere la stessa chiave ma occupare posizioni differenti nell'ordinamento, con al conseguenza diretta di avere ranghi diversi. Per questo motivo, l'operazione \texttt{rank} è riferita all'identità del nodo e non solo alla chiave.
@@ -175,13 +175,12 @@ Il confronto consiste quindi nel valutare come rappresentazioni diverse delle st
 
 
 \subsection{Strutture confrontate e complessità}
-Le tre strutture implementano lo stesso insieme di operazioni logiche, ma utilizzano rappresentazioni interne differenti. La prima soluzione mantiene direttamente gli elementi in una lista ordinata; la seconda utilizza un albero binario di ricerca non bilanciato senza informazioni aggiuntive sulla dimensione dei sottoalberi; la terza utilizza invece un AVL aumentato con l'attributo \texttt{size}.
+Le tre strutture implementano lo stesso insieme di operazioni logiche, ma utilizzano rappresentazioni interne differenti. La prima soluzione mantiene direttamente gli elementi in una lista ordinata; la seconda utilizza un albero binario di ricerca non bilanciato senza informazioni aggiuntive sulla dimensione dei sotto-alberi; la terza utilizza invece un AVL aumentato con l'attributo \texttt{size}.
 \\\\
 La Tabella~\ref{tab:complessita-strutture} riassume le \textbf{complessità teoriche} delle singole operazioni considerate nel progetto.
 Per l'ABR, $h$ rappresenta l'altezza dell'albero e può variare considerevolmente a seconda dell'ordine con cui vengono inserite le chiavi. Per l'AVL, invece, il bilanciamento garantisce che l'altezza rimanga dell'ordine di $\log n$.
 \begin{table}[htbp]
     \centering
-    \caption{Complessità teoriche delle operazioni nelle tre strutture confrontate.}
     \label{tab:complessita-strutture}
 
     \begin{tabular}{lccc}
@@ -195,6 +194,7 @@ Per l'ABR, $h$ rappresenta l'altezza dell'albero e può variare considerevolment
         \texttt{rank}         & $O(n)$      & $O(n)$      & $O(\log n)$ \\
         \bottomrule
     \end{tabular}
+    \caption{Complessità teoriche delle operazioni nelle tre strutture confrontate.}
 \end{table}
 \\\\
 La complessità indicata per \texttt{delete(node)} assume che il riferimento al nodo da eliminare sia già disponibile, come previsto dall'interfaccia adottata nel progetto. Non è stata quindi implementata la ricerca implicita del nodo, necessaria se la cancellazione si fosse basata esclusivamente sulla chiave. 
@@ -412,33 +412,481 @@ Nei test sono usate sequenze di operazioni deterministiche e pseudocasuali gener
 % Risultati
 \clearpage
 \section{Esperimenti e analisi dei risultati}
-\subsection{Protocollo sperimentale} %come è stato condotto, costruzione degli esperimenti casistica-metodo testato
+\subsection{Protocollo sperimentale}
+Le sezioni successive descrivono il protocollo adottato per il confronto sperimentale delle tre strutture. In particolare, vengono specificati l'ambiente di esecuzione, le dimensioni e gli scenari di input, le operazioni misurate e le modalità utilizzate per rendere le misurazioni
+riproducibili e confrontabili.
 
 \subsubsection{Piattaforma sperimentale}
-\subsubsection{Dati utilizzati} %che dati sono stati utilizzati, quanti batch
-\subsubsection{Scenari di input} % le casistiche testate (ascending, discending)
-\subsubsection{Ripetizioni e misurazioni}
+Gli esperimenti sono stati eseguiti localmente all'interno di un ambiente virtuale \texttt{.venv}. La piattaforma utilizzata presenta le seguenti caratteristiche:
+\begin{itemize}
+    \item sistema operativo: Windows 11, architettura AMD64;
+    \item interprete: CPython 3.14.3 a 64 bit;
+    \item processore: Intel64 Family 6 Model 141 Stepping 1,
+    GenuineIntel.
+\end{itemize}
+\\
+Le implementazioni non dipendono da librerie esterne di Python. \texttt{pytest} è stato utilizzato esclusivamente per la verifica di correttezza, mentre \texttt{Matplotlib} è stato impiegato per la generazione dei grafici. 
+\\
+La modalità \texttt{full}, utilizzata per produrre i dati analizzati,  definita dai seguenti parametri: 
+\begin{itemize}
+    \item dimensioni dell'input:
+    $100$, $300$, $900$, $2700$ e $5000$ elementi;
+    \item ripetizioni: $30$;
+    \item warm-up iniziali: $3$;
+    \item seed di base: $2026$;
+    \item dimensione dei batch per le query: $20$;
+    \item scenari: casuale distinto, crescente, decrescente e casuale
+    con molti duplicati.
+\end{itemize}
+
+\subsubsection{Dati e scenari di input}
+Con dimensione dell'input $n$ si intende il numero di elementi inseriti nella struttura durante la fase di costruzione. Sono stati considerati 5 valori crescenti: 
+\[
+n \in \{100, 300, 900, 2700, 5000\}.
+\]
+\\
+Per ogni scenario e per ogni dimensione, le tre strutture vengono confrontate sulla stessa sequenza di inserimento. All'interno della stessa runa, lista ordinata, ABR e AVL ricevono quindi gli stessi dati e gli stessi target logici delle operazioni, così da rendere coerente il confronto. 
+
+Sono stati utilizzati quattro scenari: 
+\begin{itemize}
+    \item \textbf{casuale distinto}: le chiavi da $0$ a $n-1$ vengono
+    disposte in ordine pseudocasuale;
+
+    \item \textbf{crescente}: le chiavi vengono inserite nell'ordine
+    $0,1,\ldots,n-1$;
+
+    \item \textbf{decrescente}: le stesse chiavi vengono inserite
+    nell'ordine inverso;
+
+    \item \textbf{molti duplicati}: vengono generate $n$ chiavi
+    pseudocasuali in un intervallo ristretto, in modo da produrre
+    numerose occorrenze dello stesso valore.
+\end{itemize}
+La scelta degli scenari è stata fatta deliberatamente al fine di testare le proprietà differenti delle strutture: 
+\begin{itemize}
+    \item Gli input crescenti e descrescenti costituiscono casi particolarmente significativi per l'ABR non bilanciato, che può degenerare in una catena
+    \item  Gli input casuali distinti consentono  di osservarne il comportamento in condizioni più favorevoli.
+    \item Lo scenario con molti duplicati permette di verificare il comportamento delle strutture quando più nodi hanno la stessa chiave (condizione supportata dal progetto)
+\end{itemize}
+
+\subsubsection{Misurazioni e ripetizioni} % le casistiche testate (ascending, discending)
+Per ogni coppia costituita da scenario e dimensione vengono effettuati $30$ run. Durante ciascun run vengono misurate tutte e tre le strutture utilizzando gli stessi dati di ingresso.
+
+Prima della campagna di misurazione vengono inoltre eseguiti $3$ run di warm-up non registrati. Il loro scopo è ridurre l'influenza delle condizioni iniziali di esecuzione; tali run non partecipano all'aggregazione statistica dei risultati.
+
+I tempi sono rilevati mediante \texttt{time.perf\_counter\_ns()}, che fornisce misure espresse in nanosecondi. Generazione dei dati, produzione dei seed, preparazione dei target, scrittura dei risultati, grafici non sono effettuati all'interno del timer.
+
+Le operazioni misurate sono: 
+\begin{itemize}
+    \item \textbf{build}: tempo complessivo richiesto per costruire la struttura mediante $n$ inserimenti;
+    \item \textbf{search presente}: ricerca di chiavi appartenenti alla struttura;
+    \item \textbf{search assente}: ricerca di chiavi non appartenenti alla struttura;
+    \item \textbf{select}: selezione di nodi mediante ranghi validi;
+    \item \textbf{rank}: determinazione del rango di nodi già individuati;
+    \item \textbf{delete}: cancellazione di un nodo il cui riferimento è già noto.
+\end{itemize}
+Per \texttt{build} viene utilizzato come riferimento il tempo totale necessario ai $n$ inserimenti, mentre le altre operazioni \texttt{search}, \texttt{select} e \texttt{rank}, essendo molto rapide, vengono invece misurate in batch di $20$ chiamate. Per ciascun run viene registrato il tempo totale del batch e successivamente calcolato il tempo per singola operazione dividendo il risultato per $20$. L'operazione di \texttt{delete} invece non viene eseguita in batch. ma viene al contrario eseguita una singola operazione per run, con il nodo individuato fuori dal timer. La ricerca del nodo non fa perte del tempo di cancellazione. 
+
+Oltre ai tempi vengono registrate alcune metriche strutturali secondarie, in particolare l'altezza di ABR e AVL dopo la costruzione e, per l'AVL, il valore di \texttt{size} memorizzato nella radice.
+
+Per ogni combinazione di struttura, scenario, dimensione e operazione, le $30$ misure vengono aggregate utilizzando:
+
+\begin{itemize}
+    \item la \textbf{mediana}, utilizzata come valore rappresentativo centrale;
+    \item il \textbf{primo quartile} $Q_1$, al di sotto del quale si trova il $25\%$ dei campioni;
+    \item il \textbf{terzo quartile} $Q_3$, al di sotto del quale si trova il $75\%$ dei campioni;
+    \item l'\textbf{intervallo interquartile} $IQR = Q_3-Q_1$, che misura la dispersione del $50\%$ centrale dei campioni.
+\end{itemize}
+
+I dati aggregati, sono utilizzati nell'analisi, principalmente tramite le mediane. I dati grezzi sono conservati separatamente.
+
+Non tutti i grafici prodotti dalla campagna sperimentale sono riportati nella relazione: sono stati selezionati quelli maggiormente utili a evidenziare le differenze tra le strutture, evitando di ripetere andamenti sostanzialmente equivalenti.
+
 
 \subsection{Risultati sperimentali} % quali casi offrono le informaizonie più rilevanti
+I risultati vengono analizzati separatamente per operazione, confrontando gli andamenti osservati al crescere di $n$ con le ipotesi formulate nel Capitolo~2.
+
+Non tutti i grafici prodotti dalla campagna sperimentale sono riportati nella relazione: sono stati selezionati quelli maggiormente utili a evidenziare le differenze tra le strutture, evitando di ripetere andamenti sostanzialmente equivalenti.
 
 \subsubsection{Costruzione} 
+Come viene mostrato in Figura~\ref{fig:build-confronto}, i risultati relativi alla costruzione evidenziano una forte dipendenza dall'ordine di inserimento per la lista ordinata e per l'ABR non bilanciato.
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{build_increasing.png}
+        \caption{Input crescente.}
+        \label{fig:build-increasing}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{build_decreasing.png}
+        \caption{Input decrescente.}
+        \label{fig:build-decreasing}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figure/build_random_distinct.png}
+        \caption{Input casuale distinto.}
+        \label{fig:build-random}
+    \end{subfigure}
+
+    \caption{Tempi mediani di costruzione delle tre strutture nei principali scenari di input.}
+    \label{fig:build-confronto}
+\end{figure}
+
+Nel caso della lista, l'\textbf{input crescente rappresenta lo scenario più costoso}: ogni nuova chiave deve essere collocata verso la coda e richiede la scansione degli elementi già presenti. L'input decrescente presenta invece un comportamento completamente differente, poiché ogni nuovo elemento viene collocato in testa. Gli input casuali producono un comportamento intermedio ma caratterizzato da una crescita sensibilmente maggiore rispetto al caso decrescente.
+
+L'ABR mostra una \textbf{dipendenza ancora più evidente dalla disposizione delle chiavi}. Negli scenari crescente e decrescente l'albero degenera in una catena e raggiunge altezza $h=n$, producendo il \textbf{comportamento quadratico}. Nel caso casuale distinto il costo risulta nettamente inferiore.
+
+L'AVL presenta invece un andamento più regolare tra i diversi scenari. Il bilanciamento impedisce la degenerazione dell'albero e mantiene la sua altezza nell'ordine logaritmico, rendendo il \textbf{costo complessivo della costruzione coerente con $O(n\log n)$}.
+
 \subsubsection{Ricerca}
+Per l'operazione \texttt{search} sono stati considerati separatamente target presenti e assenti dalla struttura: 
+\begin{itemize}
+    \item Per le chiavi presenti, il costo dipende dalla poszione del target e dalla struttura utilizzata.
+    \item Per le chiavi assenti vengono alternati valori inferiori al minimo e superiori al massimo dell'insieme. 
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figure/search_present_random_distinct.png}
+        \caption{Chiave presente, input casuale distinto.}
+        \label{fig:search-random}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{search_present_increasing.png}
+        \caption{Chiave presente, input crescente.}
+        \label{fig:search-increasing}
+    \end{subfigure}
+
+    \caption{Confronto dei tempi mediani di ricerca di una chiave presente.}
+    \label{fig:search-confronto}
+\end{figure}
+
+Per la lista ordinata, la distinzione è cruciale: una chiave inferiore al minimo consente di terminare rapidamente la ricerca, mnentre una chiave superiore al massimo richiede di raggiungere la fine della lista. Il \textbf{costo complessivo rimane legato alla posizione del target}.
+
+L'ABR risente della struttura interna di partenza: un albero degenero determiuna un aumento dei tempi di ricerca al crescere di $n$. Negli scenari casuali il comportamento risulta invece vicino all'AVL.
+
+L'AVL mantiene prestazioni più stabili su tutti i diversi scenari, grazie al vincolo sull'altezza. Le differenze osservate fra ricerca presente e assente sono secondarie rispetto alla struttura utilizzata ed alla loro forma. 
+
+
 \subsubsection{\texttt{select}}
+La Figura~\ref{fig:select-random} mostra il comportamento delle tre strutture durante l'operazione di \texttt{select} nello scenario casuale distinto, considerato rappresentativo poiché nelle tre strutture si registra lo stesso andamento generale. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.78\linewidth]{figure/select_random_distinct.png}
+    \caption{Confronto dei tempi mediani di \texttt{select} nello scenario casuali distinto.}
+    \label{fig:select-random}
+\end{figure} 
+
+Come è possibile osservare, l'operazione \texttt{select} mette in risalto una delle principali differenze tra le strutture non aumentate e l'AVL: 
+\begin{itemize}
+    \item Nella lista ordinata la posizione richiesta viene raggiunta mediante una scansione dalla testa. Nell'ABR è si attraversa l'ordinamento tramite minimo e successori. In entrambi i casi i tempi aumentano in modo marcato con al dimensione dell'input. 
+    \item L'AVL utilizza l'attributo \texttt{size} per stabilire se il nodo di rango richiesto si trovi nel sotto-albero di sinistra, nel nodo corrente o nel sotto-albero di destra. La crescita osservata è molto più contenuta, coerente con la complessità $O(\log n)$.
+\end{itemize}
+
+
 \subsubsection{\texttt{rank}}
+Anche per l'operazione \texttt{rank}, l'andamento delle tre strutture lungo i quattro scenari rimane pressoché il medesimo. La Figura~\ref{fig:rank-random} mostra gli andamenti dello scenario casuale distinto.  
+
+\begin{figure}[H]
+    \centering
+
+    \includegraphics[width=0.78\textwidth]{figure/rank_random_distinct.png}
+
+    \caption{Confronto dei tempi mediani di \texttt{rank} nello scenario casuale distinto.}
+    \label{fig:rank-random}
+\end{figure}
+
+Come succedeva con \texttt{selectt}, anche \texttt{rank} evidenzia il vantaggio  dell'AVL aumentato. 
+La lista ordinata e l'ABR determinano il rango attraversando la struttura fino al nodo richiesto. Al contraario, l'AVL usa la dimensione del sotto-albero di sinistra del nodo e risale verso la radice, aggiungendo soltanto le dimensioni dei sotto-alberi necessari.
+
+Di conseguenza, lista e ABR mostrano una crescita lineare, mentre il tempo dell'AVL cresce molto più lentamente e coerente al comportamento $O(\log n)$. Nei grafici, l'AVL risulta molto vicina all'asse x per via della differenza di scala significativa tra i tempi misurati.  
+
 \subsubsection{Cancellazione}
+Nell'operazione di \texttt{delete}, la misura considera il nodo già disponibile e cercare l'elemento  non è incluso nel tempo di esecuzione. La Figura~\ref{fig:delete-random} mette in risalto i costi generali di cancellazione delle tre strutture.  
+
+\begin{figure}[H]
+    \centering
+
+    \includegraphics[width=0.78\textwidth]{figure/delete_random_distinct.png}
+
+    \caption{Confronto dei tempi mediani di \texttt{delete(node)} nello scenario casuale distinto.}
+    \label{fig:delete-random}
+\end{figure}
+
+Nella lista collegata i tempi di esecuzione rimangono contenuti, poiché l'operazione prevede che il nodo eliminato sia scollegato, modificando un numero costante di riferimenti. 
+
+Anche nell'ABR la singola cancellazione misurata può richiedere pochi aggiornamenti quando la forma interna è favorevole. Il limite teorico rimane dipendente dall'altezza. 
+
+L'AVL presenta invece un costo maggiore rispetto alle altre due strutture poiché dopo la rimozione deve aggiornare \texttt{height} e \texttt{size} lungo il cammino interessato, oltre ad esserci la necessità di effettuare rotazioni per il bilanciamento.
+\\
+\\
+I tempi misurati in generale sono molti ridotti, poiché viene effettuata una singola cancellazione per run. Questi risultati sono da interpretare in modo qualitativo per osservare le differenze di costo tra strutture non aumentate e l'AVL.
+
 
 \subsection{Sintesi del confronto}
+
+Le tabelle seguenti riassumono quantitativamente alcuni dei risultati più significativi mostrati nelle sezioni precedenti. Viene considerata la dimensione massima $n=5000$ e ogni valore è espresso come \textbf{mediana (IQR)} delle $30$ ripetizioni della modalità \texttt{full}.
+
+Per la costruzione viene utilizzato il tempo totale necessario agli $n$ inserimenti, espresso in millisecondi. Per le altre operazioni viene invece utilizzato il tempo normalizzato per singola chiamata, espresso in microsecondi.
+
+
+% ---------------------------------------------------------
+% TABELLA QUANTITATIVA BUILD
+% ---------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \small
+    \label{tab:confronto-build-5000}
+
+    \begin{tabular}{lccc}
+        \toprule
+        Scenario
+        & Lista ordinata
+        & ABR
+        & AVL \\
+        \midrule
+
+        Crescente
+        & 276.43 (19.56)
+        & 316.38 (34.52)
+        & 36.72 (9.05) \\
+
+        Decrescente
+        & 3.09 (0.79)
+        & 310.88 (14.94)
+        & 34.78 (4.68) \\
+
+        Casuale distinto
+        & 124.79 (5.66)
+        & 5.38 (0.50)
+        & 31.47 (1.32) \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Tempi di costruzione per $n=5000$, espressi in millisecondi come mediana (IQR) delle 30 ripetizioni.}
+\end{table}
+
+La Tabella~\ref{tab:confronto-build-5000} evidenzia numericamente la forte dipendenza della lista ordinata e dell'ABR dalla sequenza di inserimento. Con input crescente la lista richiede circa $276.43$ ms, mentre nello scenario decrescente il tempo scende a circa $3.09$ ms, poiché i nuovi elementi possono essere inseriti direttamente in prossimità della testa.
+
+L'ABR mostra un comportamento analogo rispetto alla sensibilità all'input, poiché negli scenari crescente e decrescente la degenerazione dell'albero porta il tempo di costruzione oltre i $300$ ms, mentre con input casuale distinto il valore mediano scende a circa $5.38$ ms.
+
+L'AVL registra il comportamento significativamente più stabile, con valori compresi tra circa $31$ e $37$ ms nei tre scenari considerati, grazie al mantenimento del bilanciamento.
+
+
+% ---------------------------------------------------------
+% TABELLA QUANTITATIVA OPERAZIONI
+% ---------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \small
+    \label{tab:confronto-operazioni-5000}
+
+    \begin{tabular}{llccc}
+        \toprule
+        Operazione
+        & Scenario
+        & Lista ordinata
+        & ABR
+        & AVL \\
+        \midrule
+
+        Search presente
+        & Casuale distinto
+        & 48.258 (11.409)
+        & 0.635 (0.105)
+        & 0.515 (0.044) \\
+
+        Search presente
+        & Crescente
+        & 49.973 (11.098)
+        & 73.195 (16.106)
+        & 0.988 (0.705) \\
+
+        Select
+        & Casuale distinto
+        & 69.575 (12.855)
+        & 268.140 (45.576)
+        & 1.165 (0.058) \\
+
+        Rank
+        & Casuale distinto
+        & 62.223 (14.213)
+        & 264.445 (57.279)
+        & 0.918 (0.058) \\
+
+        Delete
+        & Casuale distinto
+        & 0.850 (0.300)
+        & 1.400 (0.400)
+        & 7.100 (0.975) \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Tempi delle principali operazioni per $n=5000$, espressi in microsecondi come mediana (IQR) delle 30 ripetizioni.}
+\end{table}
+
+La Tabella~\ref{tab:confronto-operazioni-5000} evidenzia i due fenomeni principali osservati. Il primo riguarda la sensibilità dell'ABR alla propria forma interna: nella ricerca di una chiave presente il tempo mediano passa da circa $0.64$ microsecondi nello scenario casuale distinto a oltre $73$ microsecondi nello scenario crescente, nel quale l'albero degenera.
+
+Il secondo riguarda direttamente le statistiche d'ordine. Per \texttt{select} e \texttt{rank}, l'AVL mantiene tempi prossimi a $1$ microsecondo, mentre lista e ABR richiedono decine o centinaia di microsecondi, evidenziando il vantaggio introdotto dall'attributo \texttt{size}, che consente all'AVL di evitare la scansione progressiva dell'ordinamento.
+
+La cancellazione mostra invece come Lista e ABR presentino tempi contenuto quando il nodo è già noto, mentre l'AVL mostra un costo maggiore, pari a circa $7.10$ microsecondi nello scenario considerato. La differnza è coerente con gli aggionramenti di \texttt{height} e \texttt{size}, e con l'eventuale necessità di bilanciare l'alabero.
+
+
+% ---------------------------------------------------------
+% CONFRONTO QUALITATIVO CON LE IPOTESI
+% ---------------------------------------------------------
+
+I valori quantitativi possono infine essere confrontati con le ipotesi formulate nel Capitolo~2. La Tabella~\ref{tab:sintesi-ipotesi-risultati} riassume il confronto. Il termine ``coerente'' indica che l'andamento sperimentale osservato è compatibile con il comportamento teorico previsto. Nel complesso, i risultati ottenuti risultano coerenti con la totalità delle ipotesi formulate.
+
+\begin{table}[H]
+    \centering
+    \small
+    \label{tab:sintesi-ipotesi-risultati}
+
+    \begin{tabular}{
+        p{2.4cm}
+        p{2.6cm}
+        p{3.4cm}
+        p{5.0cm}
+    }
+        \toprule
+        Ambito
+        & Struttura / scenario
+        & Ipotesi
+        & Evidenza sperimentale \\
+        \midrule
+
+        Costruzione
+        & Lista, crescente
+        & $\Theta(n^2)$
+        & Coerente con la forte crescita osservata. \\
+
+        Costruzione
+        & Lista, decrescente
+        & $\Theta(n)$
+        & Coerente; è lo scenario nettamente più favorevole. \\
+
+        Costruzione
+        & Lista, casuale / duplicati
+        & comportamento quadratico atteso
+        & Coerente con la crescita osservata. \\
+
+        Costruzione
+        & ABR, crescente / decrescente
+        & $\Theta(n^2)$
+        & Coerente con la degenerazione fino ad altezza $h=n$. \\
+
+        Costruzione
+        & ABR, casuale distinto
+        & $O(n\log n)$ atteso
+        & Coerente; il costo è molto inferiore ai casi degenerati. \\
+
+        Costruzione
+        & ABR, molti duplicati
+        & dipendente dall'input
+        & L'albero non mostra la degenerazione dei casi ordinati. \\
+
+        Costruzione
+        & AVL, tutti gli scenari
+        & $O(n\log n)$
+        & Coerente e relativamente stabile tra gli scenari. \\
+
+        \midrule
+
+        Search
+        & Lista ordinata
+        & $O(n)$
+        & Coerente con la dipendenza dalla posizione del target. \\
+
+        Search
+        & ABR
+        & $O(h)$
+        & Coerente con il forte peggioramento quando $h$ cresce. \\
+
+        Search
+        & AVL
+        & $O(\log n)$
+        & Coerente; andamento contenuto nei diversi scenari. \\
+
+        Select / Rank
+        & Lista ordinata
+        & $O(n)$
+        & Coerente con la scansione progressiva della struttura. \\
+
+        Select / Rank
+        & ABR
+        & $O(n)$
+        & Coerente con il percorso tramite minimo e successori. \\
+
+        Select / Rank
+        & AVL
+        & $O(\log n)$
+        & Coerente; \texttt{size} permette di evitare la scansione lineare. \\
+
+        Delete
+        & Lista ordinata
+        & $\Theta(1)$
+        & Tempi molto contenuti, coerenti con lo scollegamento locale. \\
+
+        Delete
+        & ABR
+        & $O(h)$
+        & Evidenza principalmente qualitativa. \\
+
+        Delete
+        & AVL
+        & $O(\log n)$
+        & Evidenza qualitativa; è visibile l'overhead di aggiornamento e riequilibrio. \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Sintesi del confronto tra ipotesi teoriche ed evidenza sperimentale.}
+\end{table}
 
 % Conclusioni
 \clearpage
 \section{Conclusioni} %conclusioni dell'esperimento, sintesi
+L'esperimento ha mostrato risultati complessivamente coerenti con le ipotesi formulate a partire dall'analisi teorica delle tre strutture.
+
+La lista ordinata presenta un comportamento fortemente dipendente dalla posizione nella quale vengono eseguite le operazioni. Risulta competitiva quando gli inserimenti avvengono vicino alla testa e permette di cancellare in tempo costante un nodo già noto. Le operazioni \texttt{select} e \texttt{rank} rimangono di complessità lineare, poiché richiedono una scansione della struttura.
+
+L'ABR non bilanciato evidenzia invece una marcata dipendenza dall'ordine di inserimento. Con forme interne favorevoli offre buone prestazioni, mentre sequenze crescenti o decrescenti determinano la degenerazione dell'albero fino ad altezza $h=n$, con un conseguente peggioramento delle operazioni dipendenti dall'altezza.
+
+L'AVL aumentato richiede un costo aggiuntivo per mantenere il bilanciamento e aggiornare gli attributi \texttt{height} e \texttt{size}. Tuttavia, l'aumento permette di mantenere un'altezza logaritmica indipendentemente dall'ordine di inserimento e, soprattutto,
+di eseguire \texttt{select} e \texttt{rank} in tempo $O(\log n)$.
+\\ 
+\\
+Il confronto evidenzia quindi il vantaggio dell'aumento di una struttura dati con informazioni aggiuntive. Nel caso delle statistiche d'ordine dinamiche, il campo \texttt{size} comporta un costo di aggiornamento durante le modifiche della struttura, ma consente di rendere efficienti proprio le operazioni che caratterizzano il problema considerato.
 
 % Bibliografia
 \clearpage
-\printbibliography[
-    heading=bibintoc,
-    title={Bibliografia}
-]
+
+\renewcommand{\refname}{Bibliografia}
+\addcontentsline{toc}{section}{Bibliografia}
+
+\begin{thebibliography}{9}
+
+\bibitem{cormen2009}
+Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein, \textit{Introduzione agli algoritmi e strutture dati}, terza edizione, McGraw-Hill, 2009.
+
+\bibitem{slide-asd-2025} \textit{Algoritmi e Strutture Dati -- A.A. 2025/2026}, slide e materiale didattico del corso.
+
+\end{thebibliography}
 
 
 \end{document}
