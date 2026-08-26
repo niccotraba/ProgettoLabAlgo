@@ -90,9 +90,9 @@
 ## D10 — Metriche del secondo esercizio
 
 - Decisione:
-  - tempo di esecuzioneUno scambio è ogni esecuzione dell'operazione algoritmica A[x] <-> A[y], anche quando x == y. Sono quindi contati anche gli autoscambi
+  - tempo di esecuzione
   - numero di confronti: Un confronto è un confronto tra valori dell'array effettuato per stabilirne l'ordine.
-  - numero di scambi.
+  - numero di scambi:  Uno scambio è ogni esecuzione dell'operazione algoritmica A[x] <-> A[y], anche quando x == y. Sono quindi contati anche gli autoscambi
 - Il tempo viene misurato sulla versione non strumentata.
 - Confronti e scambi vengono misurati separatamente.
 - Stato: definitiva.
@@ -435,9 +435,68 @@
 # Decisioni esercizio 2
 
 ## D32 — Protocollo sperimentale del secondo esercizio
-- Il secondo esercizio avrà un protocollo sperimentale dedicato.
-- Le esecuzioni complete del notebook devono produrre dati differenti.
-- Il seed dell'esecuzione deve essere registrato.
-- Dimensioni e ripetizioni saranno stabilite considerando sia il costo
-  quadratico di Selection Sort sia la profondità ricorsiva del Quick Sort
-  standard su input sfavorevoli.
+
+- Decisione:
+  - scenari:
+    1. valori distinti casuali;
+    2. valori distinti ordinati crescenti;
+    3. valori distinti ordinati decrescenti;
+    4. valori casuali con circa il 35% di occorrenze duplicate;
+  - dimensioni: `50, 100, 200, 400, 800`;
+  - ripetizioni: `30`;
+  - nessun warm-up;
+  - per ogni ripetizione vengono generati nuovi dati;
+  - Selection Sort e Quick Sort ricevono copie dello stesso
+    input iniziale;
+  - il seed viene generato e registrato prima della generazione
+    degli input sperimentali;
+  - benchmark temporale tramite `time.perf_counter_ns()`;
+  - la regione temporizzata comprende esclusivamente
+    la chiamata all'algoritmo;
+  - nel benchmark temporale l'ordine dei due algoritmi viene
+    alternato tra le ripetizioni;
+  - aggregazione dei tempi tramite mediana e IQR;
+  - per confronti e scambi viene utilizzata la mediana;
+  - il limite di ricorsione di Python non viene modificato;
+  - viene mantenuto un margine di sicurezza di `100` rispetto
+    al limite di ricorsione rilevato.
+- D11 non si applica al protocollo sperimentale dell'Esercizio 2.
+- Stato: definitiva.
+
+## D33 — Convenzioni di conteggio del secondo esercizio
+
+- Decisione:
+  - un confronto è un confronto tra valori dell'array effettuato
+    per determinarne l'ordine;
+  - non vengono conteggiati confronti tra indici, condizioni dei cicli
+    o condizioni che controllano la ricorsione;
+  - in Selection Sort viene contato ogni confronto
+    `A[j] < A[min_index]`;
+  - in Quick Sort viene contato ogni confronto tra un elemento
+    e il pivot durante la partizione;
+  - uno scambio è ogni esecuzione dell'operazione di scambio
+    tra due posizioni dell'array;
+  - vengono conteggiati anche gli auto-scambi.
+- Motivazione:
+  - mantenere le versioni strumentate aderenti alle versioni normali;
+  - misurare operazioni algoritmiche indipendenti dall'ambiente
+    di esecuzione.
+- Stato: definitiva.
+
+## D35 — Generazione degli input del secondo esercizio
+
+- Decisione:
+  - la generazione utilizza un oggetto `random.Random` dedicato;
+  - ogni esecuzione sperimentale utilizza un seed casuale registrato;
+  - i tre scenari con valori distinti derivano dallo stesso insieme
+    di valori, disposto rispettivamente in ordine casuale,
+    crescente e decrescente;
+  - lo scenario con duplicati contiene circa il 35% di occorrenze
+    duplicate;
+  - lo stesso input iniziale viene fornito ai due algoritmi tramite copie,
+    poiché entrambi ordinano in-place.
+- Motivazione:
+  - ottenere dati normalmente differenti tra esecuzioni;
+  - mantenere la possibilità di riprodurre una specifica esecuzione;
+  - isolare l'effetto dell'ordine nei tre scenari con valori distinti.
+- Stato: definitiva.

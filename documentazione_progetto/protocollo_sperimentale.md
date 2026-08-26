@@ -447,3 +447,47 @@ Prima dell'esecuzione degli esperimenti definitivi deve passare:
 
 I validatori e i test non vengono eseguiti all'interno delle regioni
 temporizzate.
+
+---
+# Protocollo sperimentale esercizio 2
+
+## Scenari
+- scenari:
+  1. valori distinti casuali;
+  2. valori distinti ordinati in modo crescente;
+  3. valori distinti ordinati in modo decrescente;
+  4. valori casuali con circa il 35% di occorrenze duplicate;
+
+## Generazione e seed
+- Ogni esecuzione utilizza un **seed casuale registrato**. La funzione `generate_seed()` genera un nuovo valore di seed e, a partire da esso, inizializza un oggetto `Random` (`rng`) utilizzato successivamente per la generazione dei dati.
+- il seed viene generato e registrato prima della generazione degli
+  input sperimentali;
+
+## Dimensioni e ripetizioni
+- dimensioni: `50, 100, 200, 400, 800`;
+- ripetizioni: `30` per ogni combinazione scenario-dimensione;
+- per ogni ripetizione vengono generati nuovi dati;
+- Selection Sort e Quick Sort ricevono copie dello stesso input
+  iniziale nella stessa ripetizione;
+- l'ordine di esecuzione di Selection Sort e Quick Sort viene
+  alternato tra le ripetizioni;
+
+## Benchmark temporale
+- timer: `time.perf_counter_ns()`;
+- la regione temporizzata comprende esclusivamente la chiamata
+  all'algoritmo di ordinamento;
+- i risultati temporali grezzi vengono conservati in nanosecondi
+  e rappresentati in microsecondi;
+
+## Confronti e scambi
+
+## Aggregazione dei risultati
+- aggregazione tramite mediana e IQR;
+- la mediana è il valore temporale principale;
+
+## Limite di ricorsione
+
+## Ambiente di esecuzione
+- il limite di ricorsione di Python non viene modificato;
+- viene mantenuto un margine di sicurezza di `100` rispetto al
+  limite di ricorsione rilevato nell'ambiente.
