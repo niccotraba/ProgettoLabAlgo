@@ -39,3 +39,6 @@ esercizio1/risultati/dati_grezzi/benchmark_calibration.csv
 esercizio1/risultati/dati_grezzi/ambiente_calibration.json
 esercizio1/risultati/dati_aggregati/benchmark_quick_aggregato.csv
 esercizio1/risultati/dati_aggregati/benchmark_calibration_aggregato.csv
+
+# checkpoint jupiter
+.ipynb_checkpoints/
