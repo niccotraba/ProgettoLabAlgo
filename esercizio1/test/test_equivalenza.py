@@ -113,14 +113,7 @@ def _assert_equivalent(
     bst: BinarySearchTree,
     avl: OrderStatisticAVL,
 ) -> None:
-    """
-    Verifica che le tre strutture rappresentino lo stesso
-    insieme dinamico ordinato:
-    - stesso numero di elementi
-    - stesso ordine
-    - stessi elementi
-    - stesa identità logica dei duplicati
-    """
+    """Verifica cardinalità, ordine, contenuto e identità dei duplicati nelle tre strutture."""
     assert len(linked_list) == len(bst) == len(avl)
 
     list_signature = _ordered_signature(linked_list)
@@ -143,9 +136,7 @@ def _assert_equivalent(
 
 
 def test_sequenza_deterministica_equivalente() -> None:
-    """
-    Test deterministico. Duplicati presenti. insertion_id predeterminati.
-    """
+    """Verifica l'equivalenza su una sequenza fissa che include duplicati e cancellazioni mirate."""
     linked_list, bst, avl = _create_structures()
 
     node_refs: dict[int, NodeTriple] = {}
@@ -293,12 +284,13 @@ def test_sequenza_pseudocasuale_equivalente() -> None:
 
     Una lista Python viene usata soltanto come oracle del test,
     non come implementazione della struttura richiesta dall'esercizio.
-    L'utilizzo di oracle testing è per evitare che il test venga passato
-    se le tre strutture presentano lo stessso errore.
+    Il confronto con un oracle indipendente evita che il test passi se
+    le tre strutture condividono lo stesso errore.
     """
     linked_list, bst, avl = _create_structures()
 
-    # seed fisso per riprodicibilità
+    # Il seed fisso rende riproducibile la sequenza e quindi facilita
+    # l'analisi di eventuali divergenze tra le implementazioni.
     rng = Random(123456)
 
     active_nodes: dict[int, NodeTriple] = {}

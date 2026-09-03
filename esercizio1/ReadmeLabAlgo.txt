@@ -66,3 +66,10 @@ Il programma legge il dataset aggregato prodotto dalla modalità full e crea:
 - esercizio1/risultati/tabelle/
 
 Le cartelle di output vengono create automaticamente se non esistono.
+
+----------------------
+Il progetto è stato sviluppato con Python 3.14.3.
+
+Le dipendenze Python esterne possono essere installate con:
+
+pip install -r esercizio1/requirements.txt

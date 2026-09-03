@@ -1,3 +1,5 @@
+"""Verifica ordinamento, collegamenti e statistiche d'ordine della lista concatenata."""
+
 import pytest
 
 from esercizio1.strutture import (
@@ -7,6 +9,7 @@ from esercizio1.strutture import (
 
 
 def test_lista_vuota() -> None:
+    """Verifica stato iniziale, ricerca e select su una lista vuota."""
     linked_list = OrderedLinkedList()
 
     assert len(linked_list) == 0
@@ -19,6 +22,7 @@ def test_lista_vuota() -> None:
 
 
 def test_inserimento_mantiene_ordinamento() -> None:
+    """Verifica che inserimenti in ordine arbitrario mantengano la sequenza ordinata."""
     linked_list = OrderedLinkedList()
 
     linked_list.insert(20)
@@ -35,6 +39,7 @@ def test_inserimento_mantiene_ordinamento() -> None:
 
 
 def test_collegamenti_prev_next() -> None:
+    """Verifica head, tail e collegamenti bidirezionali tra nodi consecutivi."""
     linked_list = OrderedLinkedList()
 
     linked_list.insert(20)
@@ -59,6 +64,7 @@ def test_collegamenti_prev_next() -> None:
 
 
 def test_duplicati_sono_nodi_distinti() -> None:
+    """Verifica identità e rango distinti per nodi con la stessa chiave."""
     linked_list = OrderedLinkedList()
 
     first = linked_list.insert(10)
@@ -76,6 +82,7 @@ def test_duplicati_sono_nodi_distinti() -> None:
 
 
 def test_search() -> None:
+    """Verifica la ricerca di chiavi presenti e assenti nella lista ordinata."""
     linked_list = OrderedLinkedList()
 
     linked_list.insert(5)
@@ -88,6 +95,7 @@ def test_search() -> None:
 
 
 def test_select_e_rank_sono_coerenti() -> None:
+    """Verifica che rank e select siano coerenti su tutte le posizioni della lista."""
     linked_list = OrderedLinkedList()
 
     for key in (30, 10, 40, 20):
@@ -100,6 +108,7 @@ def test_select_e_rank_sono_coerenti() -> None:
 
 
 def test_select_rango_non_valido() -> None:
+    """Verifica il rifiuto degli indici fuori dall'intervallo valido di select."""
     linked_list = OrderedLinkedList()
 
     linked_list.insert(10)
@@ -112,6 +121,7 @@ def test_select_rango_non_valido() -> None:
 
 
 def test_delete_nodo_interno() -> None:
+    """Verifica la rimozione di un nodo interno e il ricongiungimento dei vicini."""
     linked_list = OrderedLinkedList()
 
     first = linked_list.insert(10)
@@ -131,6 +141,7 @@ def test_delete_nodo_interno() -> None:
 
 
 def test_delete_testa() -> None:
+    """Verifica l'aggiornamento della testa e del precedente dopo la sua rimozione."""
     linked_list = OrderedLinkedList()
 
     first = linked_list.insert(10)
@@ -144,6 +155,7 @@ def test_delete_testa() -> None:
 
 
 def test_delete_coda() -> None:
+    """Verifica l'aggiornamento della coda e del successivo dopo la sua rimozione."""
     linked_list = OrderedLinkedList()
 
     first = linked_list.insert(10)
@@ -157,6 +169,7 @@ def test_delete_coda() -> None:
 
 
 def test_delete_unico_nodo() -> None:
+    """Verifica che rimuovere l'unico nodo azzeri testa, coda e cardinalità."""
     linked_list = OrderedLinkedList()
 
     node = linked_list.insert(10)
@@ -169,6 +182,7 @@ def test_delete_unico_nodo() -> None:
 
 
 def test_doppia_cancellazione() -> None:
+    """Verifica che una seconda cancellazione dello stesso nodo non abbia effetto."""
     linked_list = OrderedLinkedList()
 
     node = linked_list.insert(10)
@@ -178,6 +192,7 @@ def test_doppia_cancellazione() -> None:
 
 
 def test_nodo_di_altra_lista_non_puo_essere_eliminato() -> None:
+    """Verifica che una lista non possa eliminare nodi appartenenti a un'altra lista."""
     first_list = OrderedLinkedList()
     second_list = OrderedLinkedList()
 
@@ -190,6 +205,7 @@ def test_nodo_di_altra_lista_non_puo_essere_eliminato() -> None:
 
 
 def test_rank_nodo_di_altra_lista() -> None:
+    """Verifica che rank rifiuti un nodo appartenente a un'altra lista."""
     first_list = OrderedLinkedList()
     second_list = OrderedLinkedList()
 
@@ -200,11 +216,13 @@ def test_rank_nodo_di_altra_lista() -> None:
 
 
 def test_rispetta_protocollo_comune() -> None:
+    """Verifica che la lista implementi il protocollo comune delle strutture ordinate."""
     linked_list = OrderedLinkedList()
 
     assert isinstance(linked_list, OrderStatisticStructure)
 
 def test_sequenza_mista_lista() -> None:
+    """Verifica ordine, identità e ranghi dopo inserimenti e cancellazioni intercalati."""
     linked_list = OrderedLinkedList()
 
     node_20 = linked_list.insert(20)

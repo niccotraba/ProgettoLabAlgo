@@ -73,6 +73,8 @@ def aggregate_measurements(
         list[Measurement],
     ] = defaultdict(list)
 
+    # Il raggruppamento separa ogni combinazione sperimentale prima di
+    # calcolare mediana, quartili e IQR, evitando di mescolare campioni diversi.
     for measurement in measurements:
         key = (
             measurement.scenario,

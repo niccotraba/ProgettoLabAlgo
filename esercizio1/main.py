@@ -68,8 +68,12 @@ def main() -> None:
     print(f"Dimensioni: {config.sizes}")
     print(f"Ripetizioni: {config.repetitions}")
 
+    # Il tempo comprende l'intera campagna coordinata dal benchmark,
+    # inclusi aggregazione e salvataggio dei risultati.
     start = perf_counter()
 
+    # execute_benchmark collega esecuzione, produzione dei report e percorsi
+    # che vengono poi mostrati all'utente da questo punto di ingresso.
     (
         raw_path,
         aggregate_path,

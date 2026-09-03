@@ -1,3 +1,5 @@
+"""Verifica bilanciamento AVL, statistiche d'ordine e collegamenti dei nodi."""
+
 import pytest
 
 from esercizio1.strutture import (
@@ -54,6 +56,7 @@ def assert_valid_avl(tree: OrderStatisticAVL) -> None:
 
 
 def test_avl_vuoto() -> None:
+    """Verifica lo stato iniziale e il rifiuto di select su un AVL vuoto."""
     tree = OrderStatisticAVL()
 
     assert tree.root is None
@@ -65,6 +68,7 @@ def test_avl_vuoto() -> None:
 
 
 def test_nodo_iniziale() -> None:
+    """Verifica altezza, dimensione e posizione della radice dopo il primo inserimento."""
     tree = OrderStatisticAVL()
 
     node = tree.insert(10)
@@ -78,6 +82,7 @@ def test_nodo_iniziale() -> None:
 
 
 def test_rotazione_left_left() -> None:
+    """Verifica il riequilibrio del caso left-left tramite rotazione a destra."""
     tree = OrderStatisticAVL()
 
     tree.insert(30)
@@ -95,6 +100,7 @@ def test_rotazione_left_left() -> None:
 
 
 def test_rotazione_right_right() -> None:
+    """Verifica il riequilibrio del caso right-right tramite rotazione a sinistra."""
     tree = OrderStatisticAVL()
 
     tree.insert(10)
@@ -112,6 +118,7 @@ def test_rotazione_right_right() -> None:
 
 
 def test_rotazione_left_right() -> None:
+    """Verifica il riequilibrio del caso left-right e la radice risultante."""
     tree = OrderStatisticAVL()
 
     tree.insert(30)
@@ -125,6 +132,7 @@ def test_rotazione_left_right() -> None:
 
 
 def test_rotazione_right_left() -> None:
+    """Verifica il riequilibrio del caso right-left e la radice risultante."""
     tree = OrderStatisticAVL()
 
     tree.insert(10)
@@ -138,6 +146,7 @@ def test_rotazione_right_left() -> None:
 
 
 def test_size_dei_sottoalberi() -> None:
+    """Verifica che size rappresenti correttamente la cardinalità di ogni sottoalbero."""
     tree = OrderStatisticAVL()
 
     for key in (20, 10, 30, 5, 15, 25, 40):
@@ -156,6 +165,7 @@ def test_size_dei_sottoalberi() -> None:
 
 
 def test_select() -> None:
+    """Verifica che select restituisca i nodi nell'ordine inorder."""
     tree = OrderStatisticAVL()
 
     for key in (20, 10, 30, 5, 15, 25, 40):
@@ -172,6 +182,7 @@ def test_select() -> None:
 
 
 def test_select_rango_non_valido() -> None:
+    """Verifica il rifiuto degli indici fuori dall'intervallo valido di select."""
     tree = OrderStatisticAVL()
 
     tree.insert(10)
@@ -184,6 +195,7 @@ def test_select_rango_non_valido() -> None:
 
 
 def test_rank_select_coerenti() -> None:
+    """Verifica la coerenza reciproca tra rank e select su tutte le posizioni."""
     tree = OrderStatisticAVL()
 
     for key in (20, 10, 30, 5, 15, 25, 40):
@@ -196,6 +208,7 @@ def test_rank_select_coerenti() -> None:
 
 
 def test_duplicati_sono_nodi_distinti() -> None:
+    """Verifica identità e rango distinti per nodi AVL con la stessa chiave."""
     tree = OrderStatisticAVL()
 
     first = tree.insert(10)
@@ -213,6 +226,7 @@ def test_duplicati_sono_nodi_distinti() -> None:
 
 
 def test_search() -> None:
+    """Verifica la ricerca di una chiave presente e di una chiave assente."""
     tree = OrderStatisticAVL()
 
     tree.insert(20)
@@ -224,6 +238,7 @@ def test_search() -> None:
 
 
 def test_delete_foglia() -> None:
+    """Verifica la rimozione di una foglia mantenendo invarianti e cardinalità AVL."""
     tree = OrderStatisticAVL()
 
     tree.insert(20)
@@ -239,6 +254,7 @@ def test_delete_foglia() -> None:
 
 
 def test_delete_nodo_con_un_figlio() -> None:
+    """Verifica la rimozione di un nodo con un figlio e il mantenimento dei collegamenti."""
     tree = OrderStatisticAVL()
 
     node_20 = tree.insert(20)
@@ -256,6 +272,7 @@ def test_delete_nodo_con_un_figlio() -> None:
 
 
 def test_delete_nodo_con_due_figli() -> None:
+    """Verifica la rimozione di un nodo con due figli e il successivo riequilibrio."""
     tree = OrderStatisticAVL()
 
     node_20 = tree.insert(20)
@@ -276,6 +293,7 @@ def test_delete_nodo_con_due_figli() -> None:
 
 
 def test_delete_radice() -> None:
+    """Verifica la rimozione della radice in un albero non banale senza violare gli invarianti."""
     tree = OrderStatisticAVL()
 
     root = tree.insert(20)
@@ -291,6 +309,7 @@ def test_delete_radice() -> None:
 
 
 def test_doppia_cancellazione() -> None:
+    """Verifica che una seconda cancellazione dello stesso nodo non abbia effetto."""
     tree = OrderStatisticAVL()
 
     node = tree.insert(10)
@@ -302,6 +321,7 @@ def test_doppia_cancellazione() -> None:
 
 
 def test_delete_nodo_estraneo() -> None:
+    """Verifica che un AVL non possa eliminare nodi appartenenti a un altro AVL."""
     first_tree = OrderStatisticAVL()
     second_tree = OrderStatisticAVL()
 
@@ -314,6 +334,7 @@ def test_delete_nodo_estraneo() -> None:
 
 
 def test_rank_nodo_estraneo() -> None:
+    """Verifica che rank rifiuti un nodo appartenente a un altro AVL."""
     first_tree = OrderStatisticAVL()
     second_tree = OrderStatisticAVL()
 
@@ -324,6 +345,7 @@ def test_rank_nodo_estraneo() -> None:
 
 
 def test_sequenza_crescente_resta_bilanciata() -> None:
+    """Verifica che molti inserimenti crescenti non producano un albero degenerato."""
     tree = OrderStatisticAVL()
 
     for key in range(1, 100):
@@ -336,6 +358,7 @@ def test_sequenza_crescente_resta_bilanciata() -> None:
 
 
 def test_cancellazioni_multiple_mantengono_avl() -> None:
+    """Verifica il mantenimento degli invarianti dopo una sequenza articolata di cancellazioni."""
     tree = OrderStatisticAVL()
 
     nodes = {
@@ -365,6 +388,7 @@ def test_cancellazioni_multiple_mantengono_avl() -> None:
 
 
 def test_protocollo_comune() -> None:
+    """Verifica che l'AVL implementi il protocollo comune delle strutture ordinate."""
     tree = OrderStatisticAVL()
 
     assert isinstance(tree, OrderStatisticStructure)

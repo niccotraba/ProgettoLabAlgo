@@ -1,3 +1,5 @@
+"""Verifica il comportamento dell'ABR privo di statistiche di sottoalbero."""
+
 import pytest
 
 from esercizio1.strutture import (
@@ -7,6 +9,7 @@ from esercizio1.strutture import (
 
 
 def test_albero_vuoto() -> None:
+    """Verifica lo stato iniziale e le operazioni non valide su un ABR vuoto."""
     tree = BinarySearchTree()
 
     assert len(tree) == 0
@@ -18,6 +21,7 @@ def test_albero_vuoto() -> None:
 
 
 def test_inserimento_costruisce_abr_corretto() -> None:
+    """Verifica radice, collegamenti padre-figlio e cardinalità dopo inserimenti semplici."""
     tree = BinarySearchTree()
 
     root = tree.insert(20)
@@ -36,6 +40,7 @@ def test_inserimento_costruisce_abr_corretto() -> None:
 
 
 def test_nodo_non_possiede_size() -> None:
+    """Verifica che i nodi dell'ABR non espongano l'attributo riservato alle statistiche."""
     tree = BinarySearchTree()
 
     node = tree.insert(10)
@@ -44,6 +49,7 @@ def test_nodo_non_possiede_size() -> None:
 
 
 def test_inserimento_duplicati_a_destra() -> None:
+    """Verifica che chiavi duplicate creino nodi distinti disposti a destra."""
     tree = BinarySearchTree()
 
     first = tree.insert(10)
@@ -58,6 +64,7 @@ def test_inserimento_duplicati_a_destra() -> None:
 
 
 def test_search() -> None:
+    """Verifica la ricerca di una chiave presente e di una chiave assente."""
     tree = BinarySearchTree()
 
     tree.insert(20)
@@ -69,6 +76,7 @@ def test_search() -> None:
 
 
 def test_select_restituisce_ordine_inorder() -> None:
+    """Verifica che select restituisca i nodi secondo l'ordinamento inorder."""
     tree = BinarySearchTree()
 
     for key in (20, 10, 30, 5, 15, 25, 40):
@@ -85,6 +93,7 @@ def test_select_restituisce_ordine_inorder() -> None:
 
 
 def test_select_rango_non_valido() -> None:
+    """Verifica il rifiuto degli indici fuori dall'intervallo valido di select."""
     tree = BinarySearchTree()
 
     tree.insert(10)
@@ -97,6 +106,7 @@ def test_select_rango_non_valido() -> None:
 
 
 def test_rank_e_select_sono_coerenti() -> None:
+    """Verifica che rank e select siano operazioni inverse sulle posizioni valide."""
     tree = BinarySearchTree()
 
     for key in (20, 10, 30, 5, 15, 25, 40):
@@ -109,6 +119,7 @@ def test_rank_e_select_sono_coerenti() -> None:
 
 
 def test_rank_distingue_i_duplicati() -> None:
+    """Verifica che rank distingua le diverse occorrenze della stessa chiave."""
     tree = BinarySearchTree()
 
     first = tree.insert(10)
@@ -121,6 +132,7 @@ def test_rank_distingue_i_duplicati() -> None:
 
 
 def test_rank_nodo_estraneo() -> None:
+    """Verifica che rank rifiuti un nodo appartenente a un altro albero."""
     first_tree = BinarySearchTree()
     second_tree = BinarySearchTree()
 
@@ -131,6 +143,7 @@ def test_rank_nodo_estraneo() -> None:
 
 
 def test_delete_foglia() -> None:
+    """Verifica la rimozione di una foglia e il suo scollegamento dall'albero."""
     tree = BinarySearchTree()
 
     root = tree.insert(20)
@@ -144,6 +157,7 @@ def test_delete_foglia() -> None:
 
 
 def test_delete_nodo_con_un_figlio() -> None:
+    """Verifica che la rimozione di un nodo con un figlio ricolleghi correttamente il figlio."""
     tree = BinarySearchTree()
 
     root = tree.insert(20)
@@ -160,6 +174,7 @@ def test_delete_nodo_con_un_figlio() -> None:
 
 
 def test_delete_nodo_con_due_figli() -> None:
+    """Verifica la sostituzione con il successore e l'isolamento fisico della radice eliminata."""
     tree = BinarySearchTree()
 
     node_20 = tree.insert(20)
@@ -189,6 +204,7 @@ def test_delete_nodo_con_due_figli() -> None:
 
 
 def test_delete_radice_con_un_figlio() -> None:
+    """Verifica che la radice venga sostituita dal proprio unico figlio."""
     tree = BinarySearchTree()
 
     root = tree.insert(20)
@@ -202,6 +218,7 @@ def test_delete_radice_con_un_figlio() -> None:
 
 
 def test_delete_unico_nodo() -> None:
+    """Verifica che eliminare l'unico nodo lasci l'albero vuoto."""
     tree = BinarySearchTree()
 
     node = tree.insert(10)
@@ -213,6 +230,7 @@ def test_delete_unico_nodo() -> None:
 
 
 def test_doppia_cancellazione() -> None:
+    """Verifica che una seconda cancellazione dello stesso nodo non abbia effetto."""
     tree = BinarySearchTree()
 
     node = tree.insert(10)
@@ -222,6 +240,7 @@ def test_doppia_cancellazione() -> None:
 
 
 def test_delete_nodo_di_altro_albero() -> None:
+    """Verifica che un albero non possa eliminare nodi appartenenti a un altro albero."""
     first_tree = BinarySearchTree()
     second_tree = BinarySearchTree()
 
@@ -234,6 +253,7 @@ def test_delete_nodo_di_altro_albero() -> None:
 
 
 def test_delete_duplicato_preciso() -> None:
+    """Verifica la cancellazione della precisa occorrenza scelta tra chiavi duplicate."""
     tree = BinarySearchTree()
 
     first = tree.insert(10)
@@ -253,6 +273,7 @@ def test_delete_duplicato_preciso() -> None:
 
 
 def test_inserimento_crescente_degenera_albero() -> None:
+    """Verifica la forma degenerata prodotta da inserimenti in ordine crescente."""
     tree = BinarySearchTree()
 
     nodes = [tree.insert(key) for key in range(1, 6)]
@@ -266,12 +287,14 @@ def test_inserimento_crescente_degenera_albero() -> None:
 
 
 def test_rispetta_protocollo_comune() -> None:
+    """Verifica che l'ABR implementi il protocollo comune delle strutture ordinate."""
     tree = BinarySearchTree()
 
     assert isinstance(tree, OrderStatisticStructure)
 
 
 def test_sequenza_mista_abr() -> None:
+    """Verifica la coerenza dell'ABR dopo una sequenza mista di inserimenti e cancellazioni."""
     tree = BinarySearchTree()
 
     node_20 = tree.insert(20)

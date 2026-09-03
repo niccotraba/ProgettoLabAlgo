@@ -1,3 +1,5 @@
+"""Verifica generatori deterministici, preparazione delle query e aggregazione dei benchmark."""
+
 from esercizio1.esperimenti.benchmark import run_experiment
 from esercizio1.esperimenti.configurazione import BenchmarkConfig
 from esercizio1.esperimenti.generatori import (
@@ -9,6 +11,7 @@ from esercizio1.esperimenti.report import aggregate_measurements
 
 
 def test_seed_riproducibile() -> None:
+    """Verifica che lo stesso scenario e run producano lo stesso seed, distinti tra run diversi."""
     first = derive_seed(
         2026,
         "random_distinct",
@@ -35,6 +38,7 @@ def test_seed_riproducibile() -> None:
 
 
 def test_generatore_random_distinct() -> None:
+    """Verifica cardinalità, copertura dei valori e assenza di duplicati nello scenario casuale."""
     data = generate_input(
         "random_distinct",
         100,
@@ -47,6 +51,7 @@ def test_generatore_random_distinct() -> None:
 
 
 def test_generatore_crescente() -> None:
+    """Verifica che lo scenario crescente generi valori ordinati da zero a n meno uno."""
     data = generate_input(
         "increasing",
         5,
@@ -57,6 +62,7 @@ def test_generatore_crescente() -> None:
 
 
 def test_generatore_decrescente() -> None:
+    """Verifica che lo scenario decrescente generi gli stessi valori in ordine inverso."""
     data = generate_input(
         "decreasing",
         5,
@@ -67,6 +73,7 @@ def test_generatore_decrescente() -> None:
 
 
 def test_generatore_duplicati() -> None:
+    """Verifica che lo scenario concentrato sui duplicati limiti i valori e ripeta alcune chiavi."""
     data = generate_input(
         "duplicate_heavy",
         100,
@@ -81,6 +88,7 @@ def test_generatore_duplicati() -> None:
 
 
 def test_target_query_validi() -> None:
+    """Verifica quantità e validità dei target per ricerca, select, rank e cancellazione."""
     data = [10, 20, 30, 40, 50]
 
     targets = prepare_query_targets(
@@ -110,6 +118,7 @@ def test_target_query_validi() -> None:
 
 
 def test_benchmark_minimo() -> None:
+    """Verifica la pipeline minima del benchmark e il numero atteso di misurazioni prodotte."""
     config = BenchmarkConfig(
         sizes=(20,),
         repetitions=2,
@@ -121,9 +130,9 @@ def test_benchmark_minimo() -> None:
 
     measurements = run_experiment(config)
 
-    # 2 run
-    # × 3 strutture
-    # × 6 misurazioni:
+    # Il conteggio atteso documenta la combinazione di run, strutture e operazioni
+    # e intercetta omissioni nella pipeline sperimentale.
+    # 2 run × 3 strutture × 6 misurazioni:
     # build, search_present, search_absent,
     # select, rank, delete
     assert len(measurements) == 36
@@ -148,6 +157,7 @@ def test_benchmark_minimo() -> None:
 
 
 def test_aggregazione_benchmark() -> None:
+    """Verifica che l'aggregazione produca un gruppo per struttura e operazione con statistiche coerenti."""
     config = BenchmarkConfig(
         sizes=(20,),
         repetitions=2,

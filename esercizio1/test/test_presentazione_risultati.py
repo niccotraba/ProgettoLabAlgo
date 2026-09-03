@@ -13,6 +13,7 @@ from esercizio1.esperimenti.presentazione_risultati import (
 
 
 def test_extract_series_ordina_per_dimensione() -> None:
+    """Verifica ordinamento per dimensione e conversione dei nanosecondi in microsecondi."""
     rows = [
         {
             "scenario": "increasing",
@@ -47,6 +48,7 @@ def test_extract_series_ordina_per_dimensione() -> None:
 
 
 def test_build_usa_tempo_totale() -> None:
+    """Verifica che l'operazione build estragga il tempo totale, non quello per operazione."""
     rows = [
         {
             "scenario": "increasing",
@@ -69,6 +71,7 @@ def test_build_usa_tempo_totale() -> None:
     assert times == [5.0]
 
 def test_build_table_rows_costruisce_tabella_compatta() -> None:
+    """Verifica la costruzione di una riga compatta con i tempi delle tre strutture."""
     rows = [
         {
             "scenario": "increasing",
@@ -134,6 +137,7 @@ def test_build_table_rows_costruisce_tabella_compatta() -> None:
 
 
 def test_validate_aggregated_results_rifiuta_samples_diversi_da_30() -> None:
+    """Verifica che la validazione rifiuti risultati aggregati con un numero di campioni inatteso."""
     rows = []
 
     for scenario in (

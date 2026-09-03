@@ -16,6 +16,10 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
+# ---------------------------------------------------------------------------
+# COSTANTI / CONFIGURAZIONE
+# ---------------------------------------------------------------------------
+
 
 SCENARIOS = (
     "random_distinct",
@@ -60,6 +64,10 @@ OPERATION_LABELS = {
     "rank": "Rank",
     "delete": "Delete",
 }
+
+# ---------------------------------------------------------------------------
+# LETTURA E VALIDAZIONE DATI
+# ---------------------------------------------------------------------------
 
 
 def load_aggregated_results(
@@ -129,6 +137,10 @@ def validate_aggregated_results(
                 "Ogni gruppo full deve contenere 30 campioni"
             )
 
+# ---------------------------------------------------------------------------
+# GENERAZIONE TABELLE
+# ---------------------------------------------------------------------------
+
 
 def extract_series(
     rows: list[dict[str, str]],
@@ -168,6 +180,7 @@ def extract_series(
     ]
 
     times_us = [
+        # I CSV registrano nanosecondi; la presentazione usa microsecondi.
         float(row[metric]) / 1_000
         for row in selected
     ]
@@ -257,6 +270,11 @@ def write_table_csv(
         for row in table_rows:
             writer.writerow(row)
 
+# ---------------------------------------------------------------------------
+# GENERAZIONE GRAFICI
+# ---------------------------------------------------------------------------
+
+
 def plot_comparison(
     rows: list[dict[str, str]],
     scenario: str,
@@ -345,6 +363,11 @@ def plot_comparison(
     plt.close()
 
 
+# ---------------------------------------------------------------------------
+# GENERAZIONE COMPLETA
+# ---------------------------------------------------------------------------
+
+
 def generate_all_tables_and_plots(
     rows: list[dict[str, str]],
     output_root: Path,
@@ -395,6 +418,11 @@ def generate_all_tables_and_plots(
             plot_count += 1
 
     return table_count, plot_count
+
+# ---------------------------------------------------------------------------
+# ENTRY POINT
+# ---------------------------------------------------------------------------
+
 
 def main() -> None:
     """

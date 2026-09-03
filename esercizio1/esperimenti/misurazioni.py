@@ -70,6 +70,8 @@ def measure_batch(
     if not targets:
         raise ValueError("Il batch non può essere vuoto")
 
+    # Un solo intervallo riduce l'incidenza del costo di avvio del timer e
+    # consente di riportare un tempo medio sulla stessa quantità di query.
     start = perf_counter_ns()
 
     for target in targets:

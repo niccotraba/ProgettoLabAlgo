@@ -70,6 +70,8 @@ def _rotated_structures(
     run: int,
 ) -> tuple[StructureSpec, ...]:
     """Ruota l'ordine delle strutture in funzione del run."""
+    # La rotazione distribuisce l'eventuale effetto dell'ordine di esecuzione
+    # tra le strutture, evitando che la prima sia sempre nello stesso ruolo.
     offset = run % len(STRUCTURES)
 
     return (
@@ -159,7 +161,8 @@ def _measure_structure(
     )
 
     # Tutti i nodi necessari a rank e delete vengono individuati
-    # PRIMA delle relative misurazioni.
+    # PRIMA delle relative misurazioni: la preparazione non deve contribuire
+    # ai tempi delle operazioni che si vogliono confrontare.
     rank_nodes = tuple(
         structure.select(rank)
         for rank in targets.rank_ranks
@@ -267,7 +270,8 @@ def _measure_structure(
         )
     )
 
-    # Delete deve essere l'ultima misura perché muta la struttura.
+    # Delete viene misurata singolarmente e per ultima: muta la struttura,
+    # quindi non può essere accodata alle operazioni da confrontare.
     delete_ns, deleted = measure_single(
         structure.delete,
         delete_node,
@@ -390,6 +394,8 @@ def run_experiment(
                     target_seed,
                 )
 
+                # Input e target identici per tutte le strutture isolano il
+                # confronto dalle differenze nei dati o nelle query casuali.
                 for spec in _rotated_structures(run):
                     measurements.extend(
                         _measure_structure(
@@ -458,6 +464,8 @@ def execute_benchmark(
         config,
     )
 
+    # I tre percorsi vengono restituiti a main.py, che li rende visibili
+    # insieme al conteggio delle misure prodotte.
     return (
         raw_path,
         aggregate_path,
